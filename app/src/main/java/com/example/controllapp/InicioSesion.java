@@ -86,6 +86,7 @@ public class InicioSesion extends AppCompatActivity {
             pass
         }else{
             message of error
+
         }
         */
         Intent menu = new Intent(this,Menu.class);
