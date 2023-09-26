@@ -1,28 +1,27 @@
-package com.example.controllapp;
+package com.example.controllapp.inicioUsuario;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.example.controllapp.menu.Menu;
+import com.example.controllapp.R;
 
 public class InicioSesion extends AppCompatActivity {
 
-    Button login, register;
-    EditText usuario, contrasenha;
-    Switch modo;
-    TextView titulo, comentario;
-    ImageView background;
+    private Button login, register;
+    private EditText usuario, contrasenha;
+    private Switch modo;
+    private TextView titulo, comentario;
+    private ConstraintLayout disenho;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +42,7 @@ public class InicioSesion extends AppCompatActivity {
         modo = (Switch) findViewById(R.id.modeUI);
         titulo = (TextView) findViewById(R.id.titleUI);
         comentario = (TextView) findViewById(R.id.commentUI);
-        background = (ImageView) findViewById(R.id.backgroundUI);
+        disenho = (ConstraintLayout) findViewById(R.id.disenho);
 
 
 
@@ -73,7 +72,7 @@ public class InicioSesion extends AppCompatActivity {
     }//onclick
 
     public void irRegistro(View v){
-        Intent siguiente = new Intent(this,Registro.class);
+        Intent siguiente = new Intent(this, Registro.class);
         startActivity(siguiente);
     }//method
 
@@ -89,15 +88,14 @@ public class InicioSesion extends AppCompatActivity {
 
         }
         */
-        Intent menu = new Intent(this,Menu.class);
+        Intent menu = new Intent(this, Menu.class);
         startActivity(menu);
     }//method
 
     public void cambiarModo(View v, Activity context){
 
         if(modo.isChecked()){
-            int img = getResources().getIdentifier("@drawable/black", null, this.getPackageName());
-            background.setImageResource(img);
+            disenho.setBackgroundColor(getResources().getColor(R.color.black));
             titulo.setTextColor(getResources().getColor(R.color.white));
             comentario.setTextColor(getResources().getColor(R.color.white));
             usuario.setTextColor(getResources().getColor(R.color.white));
@@ -106,14 +104,13 @@ public class InicioSesion extends AppCompatActivity {
             contrasenha.setHintTextColor(context.getResources().getColor(R.color.white));
             modo.setTextColor(getResources().getColor(R.color.white));
         }else{
-            int img = getResources().getIdentifier("@drawable/white", null, this.getPackageName());
-            background.setImageResource(img);
+            disenho.setBackgroundColor(getResources().getColor(R.color.white));
             titulo.setTextColor(getResources().getColor(R.color.black));
             comentario.setTextColor(getResources().getColor(R.color.black));
             usuario.setTextColor(getResources().getColor(R.color.black));
             usuario.setHintTextColor(context.getResources().getColor(R.color.black));
             contrasenha.setTextColor(getResources().getColor(R.color.black));
-            contrasenha.setHintTextColor(context.getResources().getColor(R.color.white));
+            contrasenha.setHintTextColor(context.getResources().getColor(R.color.black));
             modo.setTextColor(getResources().getColor(R.color.black));
         }
     }//method

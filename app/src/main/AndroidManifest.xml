@@ -13,13 +13,13 @@
         android:theme="@style/Theme.ControllApp"
         tools:targetApi="31">
         <activity
-            android:name=".Registro"
+            android:name=".inicioUsuario.Registro"
             android:exported="false" />
         <activity
-            android:name=".Menu"
+            android:name=".menu.Menu"
             android:exported="false" />
         <activity
-            android:name=".InicioSesion"
+            android:name=".inicioUsuario.InicioSesion"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

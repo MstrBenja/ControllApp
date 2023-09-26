@@ -1,8 +1,10 @@
-package com.example.controllapp;
+package com.example.controllapp.menu;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.controllapp.R;
 
 public class Menu extends AppCompatActivity {
 
