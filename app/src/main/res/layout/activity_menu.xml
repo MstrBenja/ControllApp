@@ -23,7 +23,8 @@
         android:layout_height="wrap_content"
         android:text="EVENTOS"
         tools:layout_editor_absoluteX="160dp"
-        tools:layout_editor_absoluteY="332dp" />
+        tools:layout_editor_absoluteY="332dp"
+        android:onClick="irEventos"/>
 
     <Button
         android:id="@+id/tareas"
@@ -31,7 +32,8 @@
         android:layout_height="wrap_content"
         android:text="TAREAS"
         tools:layout_editor_absoluteX="160dp"
-        tools:layout_editor_absoluteY="412dp" />
+        tools:layout_editor_absoluteY="412dp"
+        android:onClick="irTareas"/>
 
     <Button
         android:id="@+id/info"
@@ -39,6 +41,7 @@
         android:layout_height="wrap_content"
         android:text="INFORMACIÓN"
         tools:layout_editor_absoluteX="160dp"
-        tools:layout_editor_absoluteY="492dp" />
+        tools:layout_editor_absoluteY="492dp"
+        android:onClick="irInfo"/>
 
 </LinearLayout>

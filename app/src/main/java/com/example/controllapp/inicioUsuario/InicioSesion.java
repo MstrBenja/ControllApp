@@ -71,12 +71,12 @@ public class InicioSesion extends AppCompatActivity {
 
     }//onclick
 
-    public void irRegistro(View v){
+    private void irRegistro(View v){
         Intent siguiente = new Intent(this, Registro.class);
         startActivity(siguiente);
     }//method
 
-    public void verifyUser(View v){
+    private void verifyUser(View v){
         String user = usuario.getText().toString();
         String psw = contrasenha.getText().toString();
 
@@ -92,7 +92,7 @@ public class InicioSesion extends AppCompatActivity {
         startActivity(menu);
     }//method
 
-    public void cambiarModo(View v, Activity context){
+    private void cambiarModo(View v, Activity context){
 
         if(modo.isChecked()){
             disenho.setBackgroundColor(getResources().getColor(R.color.black));
