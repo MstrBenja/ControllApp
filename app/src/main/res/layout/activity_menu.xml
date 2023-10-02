@@ -18,30 +18,27 @@
         />
     
     <Button
-        android:id="@+id/eventos"
+        android:id="@+id/eventosButton"
         android:layout_width="146dp"
         android:layout_height="wrap_content"
         android:text="EVENTOS"
         tools:layout_editor_absoluteX="160dp"
-        tools:layout_editor_absoluteY="332dp"
-        android:onClick="irEventos"/>
+        tools:layout_editor_absoluteY="332dp"/>
 
     <Button
-        android:id="@+id/tareas"
+        android:id="@+id/tareasButton"
         android:layout_width="146dp"
         android:layout_height="wrap_content"
         android:text="TAREAS"
         tools:layout_editor_absoluteX="160dp"
-        tools:layout_editor_absoluteY="412dp"
-        android:onClick="irTareas"/>
+        tools:layout_editor_absoluteY="412dp"/>
 
     <Button
-        android:id="@+id/info"
+        android:id="@+id/infoButton"
         android:layout_width="146dp"
         android:layout_height="wrap_content"
         android:text="INFORMACIÓN"
         tools:layout_editor_absoluteX="160dp"
-        tools:layout_editor_absoluteY="492dp"
-        android:onClick="irInfo"/>
+        tools:layout_editor_absoluteY="492dp"/>
 
 </LinearLayout>

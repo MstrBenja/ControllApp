@@ -13,10 +13,13 @@
         android:theme="@style/Theme.ControllApp"
         tools:targetApi="31">
         <activity
-            android:name=".menu.task.Tasks"
+            android:name=".menu.eventos.Events"
             android:exported="false" />
         <activity
-            android:name=".menu.eventos.Events"
+            android:name=".menu.info.Information"
+            android:exported="false" />
+        <activity
+            android:name=".menu.task.Tasks"
             android:exported="false" />
         <activity
             android:name=".inicioUsuario.Registro"

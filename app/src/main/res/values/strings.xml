@@ -1,4 +1,18 @@
 <resources>
     <string name="app_name">ControllApp</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="information">
+        Acá se encontrará todo el tiempo que tiene el usuario en esta aplicación \n \n \n
+
+        ===================================================== \n
+        Tiempo de uso de la aplicacion: 10hrs - 55min - 37seg. \n \n
+        Tareas completadas: 7. \n \n
+        Tareas sin completar: 2. \n \n
+        Horas contabilizadas de eventos: 9hrs con 58min y 43seg. \n \n
+        Cantidad de eventos creados: 8 eventos. \n \n
+        Eventos borrados: 2 eventos. \n \n
+        Tareas borradas: 5. \n \n
+
+    </string>
 
 </resources>
