@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.example.controllapp.R;
 import com.example.controllapp.menu.Menu;
+import com.example.controllapp.menu.eventos.infoEventos;
 
 public class Information extends AppCompatActivity {
 
@@ -21,4 +22,9 @@ public class Information extends AppCompatActivity {
         Intent menu = new Intent(this, Menu.class);
         startActivity(menu);
     }// method
+
+    public void infoEvents(){
+        Intent info = new Intent(this, infoEventos.class);
+        startActivity(info);
+    }
 }// class
