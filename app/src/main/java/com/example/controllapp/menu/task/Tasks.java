@@ -2,6 +2,7 @@ package com.example.controllapp.menu.task;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,13 +16,43 @@ import com.google.android.material.tabs.TabLayout;
 public class Tasks extends AppCompatActivity {
 
     private TabLayout tabLayout;
-    private TabItem toDo, complete;
-    private ViewPager vista;
+    private viewPagerAdapter adapter;
+    private ViewPager2 vista;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tasks);
+
+        tabLayout = (TabLayout) findViewById(R.id.tabTareas);
+        vista = (ViewPager2) findViewById(R.id.viewPager);
+        adapter = new viewPagerAdapter(this);
+        vista.setAdapter(adapter);
+
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                vista.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });// addOnTabSelectedListener
+        vista.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                tabLayout.getTabAt(position).select();
+            }
+        });// registerOnPageChangeCallback
 
     }// on create
 
