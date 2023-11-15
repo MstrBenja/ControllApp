@@ -15,7 +15,12 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.controllapp.DB.Controller;
+import com.example.controllapp.DB.Singleton;
+import com.example.controllapp.DB.User;
 import com.example.controllapp.R;
+
+import java.util.UUID;
 
 public class Registro extends AppCompatActivity {
 
@@ -29,6 +34,8 @@ public class Registro extends AppCompatActivity {
     // other
     private Spinner gender;
     private ScrollView diseno;
+    private Singleton db;
+    private Controller conn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +59,8 @@ public class Registro extends AppCompatActivity {
         ArrayAdapter <CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.combo_genero , androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
         gender.setAdapter(adapter);
 
+        db = Singleton.getInstance(this);
+
         goBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,12 +79,22 @@ public class Registro extends AppCompatActivity {
     }// oncreate
 
     private void registrar(){
-        // llamada a db
-        // verificación de datos, registro, falta de datos etc
-        //if(all ok){
+
+        User usuario = new User();
+        usuario.setId(UUID.randomUUID().toString());
+        usuario.setNombre(name.getText().toString());
+        usuario.setCorreo(email.getText().toString());
+        usuario.setEdad(Integer.parseInt(age.getText().toString()));
+        usuario.setGender(gender.getSelectedItem().toString());
+        usuario.setUserName(userName.getText().toString());
+        usuario.setPassword(password.getText().toString());
+
+        boolean respuesta = conn.registrarUser(usuario);
+
+        if(respuesta){
             AlertDialog.Builder mensaje = new AlertDialog.Builder(Registro.this);
             mensaje.setCancelable(true);
-            mensaje.setTitle("Felicidades");
+            mensaje.setTitle("Felicidades "+ usuario.getNombre());
             mensaje.setMessage("Has sido registrado satisfactoriamente!");
             mensaje.show();
             new Handler().postDelayed(new Runnable() {
@@ -86,13 +105,13 @@ public class Registro extends AppCompatActivity {
                 }
             },5000);
 
-        //}else{
+        }else{
             AlertDialog.Builder msg = new AlertDialog.Builder(Registro.this);
             msg.setCancelable(true);
             msg.setTitle("ERROR");
             msg.setMessage("A ocurrido un problema");
-            //msg.show();
-        //}
+            msg.show();
+        }
     }// method
 
     private void regresar(View view){

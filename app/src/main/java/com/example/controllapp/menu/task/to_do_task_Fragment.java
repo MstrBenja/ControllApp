@@ -84,7 +84,7 @@ public class to_do_task_Fragment extends Fragment implements onTaskAddedListener
         // se guarda los datos en la bbdd
         datos[0] = title;
         datos[1] = info;
-        diccionarioTareas.add(datos[]);
+        //diccionarioTareas.add(datos[]);
     }
 
 }
