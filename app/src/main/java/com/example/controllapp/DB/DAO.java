@@ -21,10 +21,10 @@ public class DAO {
 
     public DAO(Singleton db){
         this.db = db;
-        dbreference = db.getDbReference();
+        dbreference = this.db.getDbReference();
     }
 
-    public List<User> verificarUser(User user, Activity activity) {
+    public List<User> verificarUser() {
 
         dbreference.child("Usuario").addValueEventListener(new ValueEventListener() {
             ArrayAdapter<User> arrayAdapterUsuario;
@@ -42,9 +42,8 @@ public class DAO {
         return listUser;
     }
 
-    public boolean registrarUser(User user) {
-        dbreference.child("Usuario").child(user.getId()).setValue(user);
-        return true;
+    public void registrarUser(User user) {
+        dbreference.child("User").child(user.getId()).setValue(user);
     }
 
     public void registrarTask() {

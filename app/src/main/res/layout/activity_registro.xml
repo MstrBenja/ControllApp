@@ -127,31 +127,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/userNameUI" />
 
-        <EditText
-            android:id="@+id/repetirPsw"
-            android:layout_width="245dp"
-            android:layout_height="56dp"
-            android:layout_marginTop="32dp"
-            android:ems="10"
-            android:hint="Repetir Contraseña"
-            android:inputType="textPassword"
-            android:textAlignment="center"
-            android:textStyle="italic"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/contrasenhaUI" />
-
         <Button
             android:id="@+id/registrarseUI"
             android:layout_width="172dp"
             android:layout_height="54dp"
             android:layout_marginStart="119dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="104dp"
             android:layout_marginEnd="120dp"
             android:text="Registrarse"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/repetirPsw" />
+            app:layout_constraintTop_toTopOf="@+id/contrasenhaUI" />
 
         <Button
             android:id="@+id/goBackUI"

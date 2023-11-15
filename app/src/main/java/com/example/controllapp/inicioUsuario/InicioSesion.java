@@ -22,6 +22,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
+import java.util.Locale;
 
 public class InicioSesion extends AppCompatActivity {
 
@@ -32,6 +33,7 @@ public class InicioSesion extends AppCompatActivity {
     private ConstraintLayout disenho;
     private Singleton db;
     private Controller conn;
+    private List<User> verif;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,28 +90,41 @@ public class InicioSesion extends AppCompatActivity {
 
     private void verifyUser(View v){
 
+        conn = new Controller(db);
         String userName = usuarioUI.getText().toString();
         String psw = contrasenha.getText().toString();
 
         User usuario = new User(userName, psw);
 
-        List<User> verif = conn.verificarUser(usuario,this);
+        try {
+            verif = conn.verificarUser();
+        }catch (Exception E){
+            Toast.makeText(this, "Ha ocurrido un error!", Toast.LENGTH_LONG).show();
+        }
+
 
         //Data Base Verification
-        if(verif.isEmpty()){
-            Toast.makeText(this, "no hay na'", Toast.LENGTH_SHORT).show();
+        if(verif == null){
+
+            Toast.makeText(this, "no hay na'", Toast.LENGTH_LONG).show();
         }else{
+
             for (User lista : verif){
-                if(lista.getNombre() == userName && lista.getPassword() == psw){
-                    Intent menu = new Intent(this, Menu.class);
-                    startActivity(menu);
+                if(lista.getNombre() == userName.toLowerCase(Locale.ROOT) || lista.getCorreo() == userName.toLowerCase()){
+
+                    if(lista.getPassword() == psw){
+                        Intent menu = new Intent(this, Menu.class);
+                        startActivity(menu);
+                    }//if
                 }else{
+
                     Toast.makeText(this, "Hubo un error, no existe ese usuario", Toast.LENGTH_SHORT).show();
                     usuarioUI.setText("");
                     contrasenha.setText("");
-                }
-            }
-        }
+                }//else
+            }//for
+
+        }// else
 
 
     }//method
