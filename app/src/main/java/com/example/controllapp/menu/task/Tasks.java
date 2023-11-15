@@ -1,7 +1,6 @@
 package com.example.controllapp.menu.task;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
@@ -10,7 +9,6 @@ import android.view.View;
 
 import com.example.controllapp.R;
 import com.example.controllapp.menu.Menu;
-import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
 public class Tasks extends AppCompatActivity {

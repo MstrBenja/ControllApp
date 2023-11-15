@@ -13,6 +13,9 @@
         android:theme="@style/Theme.ControllApp"
         tools:targetApi="31">
         <activity
+            android:name=".menu.task.add_Task"
+            android:exported="false" />
+        <activity
             android:name=".menu.eventos.infoEventos"
             android:exported="false" />
         <activity
