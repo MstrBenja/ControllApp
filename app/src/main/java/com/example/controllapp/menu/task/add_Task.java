@@ -17,6 +17,7 @@ public class add_Task extends AppCompatActivity {
     private TextInputEditText info;
     private Button agregar;
     private onTaskAddedListener taskAddedListener;
+    private to_do_task_Fragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +28,9 @@ public class add_Task extends AppCompatActivity {
         info = (TextInputEditText) findViewById(R.id.informacion);
         agregar = (Button) findViewById(R.id.agregarTareaUI);
 
-        to_do_task_Fragment fragment = (to_do_task_Fragment) getSupportFragmentManager().findFragmentById(R.id.contenedor);
+        fragment = (to_do_task_Fragment) getSupportFragmentManager().findFragmentById(R.id.contenedor);
 
-        if(fragment != null && fragment instanceof onTaskAddedListener){
+        if(fragment instanceof onTaskAddedListener){
             taskAddedListener = (onTaskAddedListener) fragment;
         }
 
@@ -45,12 +46,12 @@ public class add_Task extends AppCompatActivity {
 
                 Bundle datos = new Bundle();
 
-                //datos.putString("title", titulo.getText().toString());
-                //datos.putString("information", info.getText().toString());
-                //fragment.setArguments(datos);
+                datos.putString("title", titulo.getText().toString());
+                datos.putString("information", info.getText().toString());
+                fragment.setArguments(datos);
 
-                if (taskAddedListener != null){
-                    taskAddedListener.onTaskAdded(titulo.getText().toString(), info.getText().toString());
+                if (fragment != null){
+                    fragment.onTaskAdded(titulo.getText().toString(), info.getText().toString());
                 }
 
                 Intent tareas = new Intent(add_Task.this, Tasks.class);

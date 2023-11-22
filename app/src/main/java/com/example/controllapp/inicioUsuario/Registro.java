@@ -42,8 +42,8 @@ public class Registro extends AppCompatActivity {
     private Singleton db;
     private Controller conn;
     private boolean respuesta;
-    private FirebaseDatabase database;
-    private DatabaseReference dbReference;
+    public FirebaseDatabase database;
+    public DatabaseReference dbReference;
 
 
     @Override
@@ -93,7 +93,7 @@ public class Registro extends AppCompatActivity {
 
     private void registrar(View view){
 
-        conn = new Controller(db);
+        //conn = new Controller(db);
 
         User usuario = new User();
         usuario.setId(UUID.randomUUID().toString());

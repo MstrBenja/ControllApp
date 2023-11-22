@@ -104,7 +104,7 @@ public class InicioSesion extends AppCompatActivity {
 
 
         //Data Base Verification
-        if(verif == null){
+        /*if(verif == null){
 
             Toast.makeText(this, "no hay na'", Toast.LENGTH_LONG).show();
         }else{
@@ -124,8 +124,9 @@ public class InicioSesion extends AppCompatActivity {
                 }//else
             }//for
 
-        }// else
-
+        }*/// else
+        Intent menu = new Intent(this, Menu.class);
+        startActivity(menu);
 
     }//method
 
