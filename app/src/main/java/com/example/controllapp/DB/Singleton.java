@@ -1,47 +1,29 @@
 package com.example.controllapp.DB;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.content.Context;
 
-import com.example.controllapp.inicioUsuario.InicioSesion;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class Singleton {
-    private static Singleton instance;
-    private FirebaseDatabase db;
-    private DatabaseReference dbReference;
+    private static FirebaseDatabase db;
+    private static DatabaseReference dbReference;
     public String value;
 
 
-    private Singleton(Activity activity) {
-       this.value = value;
-        FirebaseApp.initializeApp(activity.getApplicationContext());
+    public static void inicializar(Context context) {
+        FirebaseApp.initializeApp(context.getApplicationContext());
         db = FirebaseDatabase.getInstance();
         dbReference = db.getReference();
     }
 
-    public static Singleton getInstance(Activity activity) {
-        if (instance == null) {
-            instance = new Singleton(activity);
+    public static DatabaseReference getDatabase(Context context) {
+        if (dbReference == null) {
+            FirebaseApp.initializeApp(context.getApplicationContext());
+            db = FirebaseDatabase.getInstance();
+            dbReference = db.getReference();
         }
-        return instance;
-    }
-
-    public FirebaseDatabase getDb() {
-        return db;
-    }
-
-    public void setDb(FirebaseDatabase db) {
-        this.db = db;
-    }
-
-    public DatabaseReference getDbReference() {
         return dbReference;
-    }
-
-    public void setDbReference(DatabaseReference dbReference) {
-        this.dbReference = dbReference;
     }
 }

@@ -4,7 +4,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -20,7 +19,6 @@ import com.example.controllapp.DB.Controller;
 import com.example.controllapp.DB.Singleton;
 import com.example.controllapp.DB.User;
 import com.example.controllapp.R;
-import com.google.firebase.Firebase;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -51,10 +49,6 @@ public class Registro extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
 
-        FirebaseApp.initializeApp(this);
-        database = FirebaseDatabase.getInstance();
-        dbReference = database.getReference();
-
 
         // Texts
         name = (EditText) findViewById(R.id.nombreUI);
@@ -72,7 +66,7 @@ public class Registro extends AppCompatActivity {
         ArrayAdapter <CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.combo_genero , androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
         gender.setAdapter(adapter);
 
-        db = Singleton.getInstance(this);
+        dbReference = Singleton.getDatabase(getApplicationContext());
 
         goBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,7 +87,7 @@ public class Registro extends AppCompatActivity {
 
     private void registrar(View view){
 
-        //conn = new Controller(db);
+        conn = new Controller(dbReference);
 
         User usuario = new User();
         usuario.setId(UUID.randomUUID().toString());
@@ -106,8 +100,7 @@ public class Registro extends AppCompatActivity {
 
 
         try {
-            dbReference.child("User").child(usuario.getId()).setValue(usuario);
-            Toast.makeText(this, "si paso", Toast.LENGTH_SHORT).show();
+            conn.registrarUser(usuario);
 
         }catch (Exception E){
             String problema = E.getMessage();
@@ -115,33 +108,25 @@ public class Registro extends AppCompatActivity {
         }
 
         /*
-        if(respuesta){
-            AlertDialog.Builder mensaje = new AlertDialog.Builder(Registro.this);
-            mensaje.setCancelable(true);
-            mensaje.setTitle("Felicidades "+ usuario.getNombre());
-            mensaje.setMessage("Has sido registrado satisfactoriamente!");
-            mensaje.show();
+        AlertDialog.Builder mensaje = new AlertDialog.Builder(Registro.this);
+        mensaje.setCancelable(true);
+        mensaje.setTitle("Felicidades "+ usuario.getNombre());
+        mensaje.setMessage("Has sido registrado satisfactoriamente!");
+        mensaje.show();*/
 
-               new Handler().postDelayed(new Runnable() {
-                   @Override
-                   public void run() {
-                       regresar(new View(view.getContext()));
-                   }
-               },5000);
-
-        }else{
-
-            AlertDialog.Builder msg = new AlertDialog.Builder(Registro.this);
-            msg.setCancelable(true);
-            msg.setTitle("ERROR");
-            msg.setMessage("A ocurrido un problema");
-            msg.show();
-        }*/
+        /*
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                regresar(new View(view.getContext()));
+            }
+            },5000);*/
     }
 
     private void regresar(View view){
         Intent regresar = new Intent(this, InicioSesion.class);
         startActivity(regresar);
+        finish();
     }// method
 
 }// class

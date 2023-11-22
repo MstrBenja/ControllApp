@@ -19,6 +19,7 @@ import com.example.controllapp.DB.User;
 import com.example.controllapp.menu.Menu;
 import com.example.controllapp.R;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
@@ -31,9 +32,10 @@ public class InicioSesion extends AppCompatActivity {
     private Switch modo;
     private TextView titulo, comentario;
     private ConstraintLayout disenho;
-    private Singleton db;
+    private DatabaseReference dbReference;
     private Controller conn;
-    private List<User> verif;
+    private List<User> listUser;
+    private boolean verif;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +57,7 @@ public class InicioSesion extends AppCompatActivity {
         comentario = (TextView) findViewById(R.id.commentUI);
         disenho = (ConstraintLayout) findViewById(R.id.disenho);
 
-        db = Singleton.getInstance(this);
+        Singleton.inicializar(getApplicationContext());
 
         // register onclick function
         register.setOnClickListener(new View.OnClickListener() {
@@ -86,47 +88,50 @@ public class InicioSesion extends AppCompatActivity {
     private void irRegistro(View v){
         Intent siguiente = new Intent(this, Registro.class);
         startActivity(siguiente);
+        finish();
     }//method
 
     private void verifyUser(View v){
 
-        conn = new Controller(db);
+        conn = new Controller(dbReference);
         String userName = usuarioUI.getText().toString();
         String psw = contrasenha.getText().toString();
 
-        User usuario = new User(userName, psw);
+        User usuario = new User();
+        usuario.setUserName(userName);
+        usuario.setPassword(psw);
 
         try {
-            verif = conn.verificarUser();
+            listUser = conn.verificarUser(getApplicationContext(), usuario);
         }catch (Exception E){
-            Toast.makeText(this, "Ha ocurrido un error!", Toast.LENGTH_LONG).show();
+            String mensaje  = E.getMessage().toString();
+            Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show();
         }
 
+        Toast.makeText(this, "Si pasó el try", Toast.LENGTH_SHORT).show();
+
+        /*
+        for(User lista : listUser){
+            if(lista.getUserName() == usuario.getUserName() && lista.getPassword() == usuario.getPassword()){
+                verif = true;
+                break;
+            }else{
+                verif = false;
+            }
+        }*/
 
         //Data Base Verification
-        /*if(verif == null){
+        /*
+        if(verif){
+            Intent menu = new Intent(this, Menu.class);
+            startActivity(menu);
+            finish();
 
-            Toast.makeText(this, "no hay na'", Toast.LENGTH_LONG).show();
         }else{
-
-            for (User lista : verif){
-                if(lista.getNombre() == userName.toLowerCase(Locale.ROOT) || lista.getCorreo() == userName.toLowerCase()){
-
-                    if(lista.getPassword() == psw){
-                        Intent menu = new Intent(this, Menu.class);
-                        startActivity(menu);
-                    }//if
-                }else{
-
-                    Toast.makeText(this, "Hubo un error, no existe ese usuario", Toast.LENGTH_SHORT).show();
-                    usuarioUI.setText("");
-                    contrasenha.setText("");
-                }//else
-            }//for
-
-        }*/// else
-        Intent menu = new Intent(this, Menu.class);
-        startActivity(menu);
+            usuarioUI.setText("");
+            contrasenha.setText("");
+            Toast.makeText(this, "No se ha encontrado a nadie con esas credenciales...", Toast.LENGTH_LONG).show();
+        }*/
 
     }//method
 
