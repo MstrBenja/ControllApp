@@ -1,5 +1,7 @@
 package com.example.controllapp.menu.task;
 
+import static com.example.controllapp.menu.task.to_do_task_Fragment.listaTareas;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -16,8 +18,7 @@ public class add_Task extends AppCompatActivity {
     private EditText titulo;
     private TextInputEditText info;
     private Button agregar;
-    private onTaskAddedListener taskAddedListener;
-    private to_do_task_Fragment fragment;
+    private Tareas tarea;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,12 +28,6 @@ public class add_Task extends AppCompatActivity {
         titulo = (EditText) findViewById(R.id.tituloName);
         info = (TextInputEditText) findViewById(R.id.informacion);
         agregar = (Button) findViewById(R.id.agregarTareaUI);
-
-        fragment = (to_do_task_Fragment) getSupportFragmentManager().findFragmentById(R.id.contenedor);
-
-        if(fragment instanceof onTaskAddedListener){
-            taskAddedListener = (onTaskAddedListener) fragment;
-        }
 
         guardarTarea();
 
@@ -44,19 +39,12 @@ public class add_Task extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Bundle datos = new Bundle();
-
-                datos.putString("title", titulo.getText().toString());
-                datos.putString("information", info.getText().toString());
-                fragment.setArguments(datos);
-
-                if (fragment != null){
-                    fragment.onTaskAdded(titulo.getText().toString(), info.getText().toString());
-                }
+                tarea = new Tareas(titulo.getText().toString(), info.getText().toString(), true);
+                listaTareas.add(tarea);
 
                 Intent tareas = new Intent(add_Task.this, Tasks.class);
-                tareas.putExtras(datos);
                 startActivity(tareas);
+                finish();
             }
         });
     }

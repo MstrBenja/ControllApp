@@ -71,7 +71,7 @@ public class InicioSesion extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                verifyUser(view);
+                irMenu(view);
             }
         });
 
@@ -157,5 +157,11 @@ public class InicioSesion extends AppCompatActivity {
             modo.setTextColor(getResources().getColor(R.color.black));
         }
     }//method
+
+    public void irMenu(View view){
+        Intent intent = new Intent(this, Menu.class);
+        startActivity(intent);
+        finish();
+    }
 
 }//class

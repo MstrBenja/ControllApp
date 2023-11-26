@@ -9,21 +9,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.controllapp.R;
 
+import org.w3c.dom.Text;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 
-public class to_do_task_Fragment extends Fragment implements onTaskAddedListener {
+public class to_do_task_Fragment extends Fragment {
     private Button agregarTarea;
     private LinearLayout ly, box;
 
     private TextView prueba;
-    private String[] datos;
-    private ArrayList<Array> diccionarioTareas;
+    private View estructura_tarea;
+    private String titulo;
+    private String informacion;
+    private TextView tituloTarea, infoTarea;
+
+    public static ArrayList<Tareas> listaTareas;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -31,43 +40,53 @@ public class to_do_task_Fragment extends Fragment implements onTaskAddedListener
 
         View rootView = inflater.inflate(R.layout.fragment_to_do_task_, container, false);
 
+        estructura_tarea = getLayoutInflater().inflate(R.layout.task_estructure, null);
+
+
         // assignation
-        ly = (LinearLayout) rootView.findViewById(R.id.padre);
+        ly = (LinearLayout) rootView.findViewById(R.id.taskBox);
         agregarTarea = (Button) rootView.findViewById(R.id.agregarTarea);
         box = (LinearLayout) rootView.findViewById(R.id.taskBox);
         prueba = (TextView) rootView.findViewById(R.id.prueba);
 
 
-        datos = new String[2];
-
         // open other tab
-        agregarInfo(rootView);
-
+        irAgregarInfo(rootView);
 
         // method to put all the info all ready created
-        infoGuardada();
+        infoGuardada(estructura_tarea, ly);
 
+        // method if the task is checked
+        tareaFinalizada(estructura_tarea);
 
         return rootView;
 
     }
 
     // this method is created to insert all the info allready created en the bbdd
-    public void infoGuardada(){
+    public void infoGuardada(View estructura_tarea, LinearLayout taskBox){
 
-        //String datosTitulo = tareas.getString("title");
-        //String datosInfo = tareas.getString("info");
+        for(Tareas lista : listaTareas){
 
-        if(datos[0] != null && datos[1] != null){
-            prueba.setText(datos[0] + " === "+ datos[1]);
+            tituloTarea = (TextView) estructura_tarea.findViewById(R.id.tituloTarea);
+            infoTarea = (TextView) estructura_tarea.findViewById(R.id.informacionTarea);
+
+            informacion = lista.getInfo();
+            titulo = lista.getTitulo();
+
+            tituloTarea.setText(titulo);
+            infoTarea.setText(informacion);
+
+            boolean activo =  lista.estaActivo();
+
+            if(activo){
+                taskBox.addView(estructura_tarea);
+            }
         }
-
-        //View vista = getLayoutInflater().inflate(R.layout.task_estructure, null);
-
     }
 
     // this method is for open other activity
-    public void agregarInfo(View view){
+    public void irAgregarInfo(View view){
 
         agregarTarea.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,13 +97,20 @@ public class to_do_task_Fragment extends Fragment implements onTaskAddedListener
         });
     }
 
-    @Override
-    public void onTaskAdded(String title, String info){
+    public void tareaFinalizada(View estructura_tarea){
 
-        // se guarda los datos en la bbdd
-        datos[0] = title;
-        datos[1] = info;
-        //diccionarioTareas.add(datos[]);
+        String titulo = String.valueOf((TextView) estructura_tarea.findViewById(R.id.tituloTarea));
+        CheckBox checked = (CheckBox) estructura_tarea.findViewById(R.id.confirmacion);
+
+        if(checked.isChecked()){
+
+            for(Tareas lista : listaTareas){
+                if(titulo == lista.getTitulo()){
+                    lista.setActivo(false);
+                    estructura_tarea.setVisibility(View.GONE);
+                }
+            }
+        }
     }
 
 }
