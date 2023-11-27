@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.controllapp.DB.Tasks;
 import com.example.controllapp.R;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -39,6 +40,7 @@ public class add_Task extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                // codigo bbbdd
                 tarea = new Tareas(titulo.getText().toString(), info.getText().toString(), true);
                 listaTareas.add(tarea);
 

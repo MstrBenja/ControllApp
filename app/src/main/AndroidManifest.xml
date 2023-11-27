@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools" >
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -13,7 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ControllApp"
-        tools:targetApi="31">
+        tools:targetApi="31" >
+        <activity
+            android:name=".menu.eventos.add_Event"
+            android:exported="false" />
         <activity
             android:name=".menu.task.add_Task"
             android:exported="false" />
@@ -21,13 +24,13 @@
             android:name=".menu.eventos.infoEventos"
             android:exported="false" />
         <activity
-            android:name=".menu.eventos.Events"
+            android:name=".menu.eventos.Eventos"
             android:exported="false" />
         <activity
             android:name=".menu.info.Information"
             android:exported="false" />
         <activity
-            android:name=".menu.task.Tasks"
+            android:name=".DB.Tasks"
             android:exported="false" />
         <activity
             android:name=".inicioUsuario.Registro"
@@ -37,7 +40,7 @@
             android:exported="false" />
         <activity
             android:name=".inicioUsuario.InicioSesion"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

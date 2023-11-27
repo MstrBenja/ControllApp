@@ -6,10 +6,9 @@
     android:layout_gravity="center">
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/evento"
         android:layout_width="82dp"
         android:layout_height="101dp"
-
         android:textSize="10sp"
         android:background="@drawable/event_design"
         android:text="Button" />
