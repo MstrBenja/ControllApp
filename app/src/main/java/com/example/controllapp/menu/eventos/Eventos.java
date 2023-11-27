@@ -20,7 +20,6 @@ public class Eventos extends AppCompatActivity {
     private LinearLayout primerLayout, segundoLayout, tercerLayout, cuartoLayout, progresoEvento;
     private TableLayout tabla;
     private TableRow primeraFila, segundaFila, terceraFila, cuartaFila;
-    private TableLayout tabla;
     private Button agregar, evento;
     private View estructura_evento;
     public static ArrayList<EventsInfo> listaEventos;
