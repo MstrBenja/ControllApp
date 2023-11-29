@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.controllapp.DB.Tasks;
 import com.example.controllapp.R;
@@ -41,12 +42,20 @@ public class add_Task extends AppCompatActivity {
             public void onClick(View v) {
 
                 // codigo bbbdd
-                tarea = new Tareas(titulo.getText().toString(), info.getText().toString(), true);
-                listaTareas.add(tarea);
 
+                try {
+                    tarea = new Tareas(titulo.getText().toString(), info.getText().toString(), true);
+                    listaTareas.add(tarea);
+                }catch (Exception E){
+                    String mensaje = E.getMessage().toString();
+                    Toast.makeText(add_Task.this, mensaje, Toast.LENGTH_SHORT).show();
+                }
+
+                /*
                 Intent tareas = new Intent(add_Task.this, Tasks.class);
                 startActivity(tareas);
-                finish();
+                finish();*/
+
             }
         });
     }

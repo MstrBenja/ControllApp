@@ -10,8 +10,6 @@ public class EventsInfo {
         this.activo = true;
     }
 
-
-
     public String getTexto() {
         return texto;
     }

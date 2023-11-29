@@ -16,12 +16,15 @@ import android.widget.Toast;
 import com.example.controllapp.DB.Controller;
 import com.example.controllapp.DB.Singleton;
 import com.example.controllapp.DB.User;
+import com.example.controllapp.MQTT.mqttHandler;
 import com.example.controllapp.menu.Menu;
 import com.example.controllapp.R;
+import com.example.controllapp.menu.task.Tareas;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,11 +40,31 @@ public class InicioSesion extends AppCompatActivity {
     private List<User> listUser;
     private boolean verif;
 
+    // MQTT ======================================================================
+    private static final String BROKER_URL = "tcp://androidteststiqq.cloud.shiftr.io:1883";
+    private static final String CLIENT_ID = "ControllApp";
+
+    private mqttHandler mqttHandler;
+    // MQTT ======================================================================
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_iniciosesion);
 
+
+        // MQTT ====================================================================
+        try{
+            mqttHandler = new mqttHandler();
+            mqttHandler.connect(BROKER_URL,CLIENT_ID);
+
+            subscribeToTopic("Tema1");
+            publishMessage("Tema1", "SAMPLE TEXT - IM THE MISTER BENJAMIN SANHUEZA XD");
+        }catch (Exception E){
+            String mensaje = E.getMessage().toString();
+            Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
+        }
+        // MQTT ====================================================================
 
         // buttons
         login = (Button) findViewById(R.id.loginUI);
@@ -83,7 +106,15 @@ public class InicioSesion extends AppCompatActivity {
             }
         });
 
-    }//onclick
+    }//onCreate
+
+
+    @Override
+    protected void onDestroy() {
+        mqttHandler.disconnect();
+        super.onDestroy();
+
+    }
 
     private void irRegistro(View v){
         Intent siguiente = new Intent(this, Registro.class);
@@ -163,5 +194,16 @@ public class InicioSesion extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    // MQTT ======================================================================
+    private void publishMessage(String topic, String message){
+        Toast.makeText(this, "Publishing message: " + message, Toast.LENGTH_SHORT).show();
+        mqttHandler.publish(topic,message, this);
+    }
+    private void subscribeToTopic(String topic){
+        Toast.makeText(this, "Subscribing to topic "+ topic, Toast.LENGTH_SHORT).show();
+        mqttHandler.subscribe(topic);
+    }
+    // MQTT ====================================================================
 
 }//class

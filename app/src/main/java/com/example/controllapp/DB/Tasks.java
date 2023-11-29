@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.example.controllapp.R;
 import com.example.controllapp.menu.Menu;
+import com.example.controllapp.menu.task.viewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 public class Tasks extends AppCompatActivity {
