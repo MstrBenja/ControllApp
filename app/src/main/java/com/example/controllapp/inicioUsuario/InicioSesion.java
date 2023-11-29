@@ -56,10 +56,10 @@ public class InicioSesion extends AppCompatActivity {
         // MQTT ====================================================================
         try{
             mqttHandler = new mqttHandler();
-            mqttHandler.connect(BROKER_URL,CLIENT_ID);
+            mqttHandler.connect(BROKER_URL,CLIENT_ID, this);
 
             subscribeToTopic("Tema1");
-            publishMessage("Tema1", "SAMPLE TEXT - IM THE MISTER BENJAMIN SANHUEZA XD");
+            publishMessage("Tema1", "a");
         }catch (Exception E){
             String mensaje = E.getMessage().toString();
             Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();

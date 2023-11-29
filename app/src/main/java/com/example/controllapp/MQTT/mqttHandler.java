@@ -2,9 +2,12 @@ package com.example.controllapp.MQTT;
 
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.example.controllapp.DB.User;
 
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -17,7 +20,7 @@ public class mqttHandler {
     public String USERNAME;
     public String PASSWORD;
 
-    public void connect(String brokerUrl, String clientId) {
+    public void connect(String brokerUrl, String clientId, Context context) {
         try {
             // persistencia de datos
             MemoryPersistence persistence = new MemoryPersistence();
@@ -33,11 +36,44 @@ public class mqttHandler {
             connectOptions.setUserName(USERNAME);
             connectOptions.setPassword(PASSWORD.toCharArray());
 
+            client.setCallback(new MqttCallback()  {
+
+                @Override
+                public void connectionLost(Throwable cause) {
+                    // Manejar pérdida de conexión
+                    Toast.makeText(context, "Conexión Perdida", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void messageArrived(String topic, MqttMessage message) throws Exception {
+
+                    try {
+                        // Este método se llama cuando se recibe un mensaje en el tema suscrito
+                        String messageText = new String(message.getPayload(), "UTF-8");
+                        // Muestra el mensaje con un Toast
+                        Toast.makeText(context, messageText, Toast.LENGTH_SHORT).show();
+                    } catch (Exception e){
+                        e.printStackTrace();
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void deliveryComplete(IMqttDeliveryToken token) {
+
+                }
+
+
+            });
+
             // Opciones de conexion
             connectOptions.setCleanSession(true);
 
             // Conectar al broker
             client.connect(connectOptions);
+
+
+
         } catch (MqttException e) {
             e.printStackTrace();
         }
