@@ -1,6 +1,6 @@
 package com.example.controllapp.menu.task;
 
-import static com.example.controllapp.menu.task.to_do_task_Fragment.listaTareas;
+import static com.example.controllapp.inicioUsuario.InicioSesion.listaTareas;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.controllapp.DB.Tasks;
@@ -20,7 +21,7 @@ public class add_Task extends AppCompatActivity {
     private EditText titulo;
     private TextInputEditText info;
     private Button agregar;
-    private Tareas tarea;
+    private TextView texto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,17 +45,16 @@ public class add_Task extends AppCompatActivity {
                 // codigo bbbdd
 
                 try {
-                    tarea = new Tareas(titulo.getText().toString(), info.getText().toString(), true);
+                    Tareas tarea = new Tareas(titulo.getText().toString(), info.getText().toString(), true);
                     listaTareas.add(tarea);
                 }catch (Exception E){
                     String mensaje = E.getMessage().toString();
                     Toast.makeText(add_Task.this, mensaje, Toast.LENGTH_SHORT).show();
                 }
 
-                /*
                 Intent tareas = new Intent(add_Task.this, Tasks.class);
                 startActivity(tareas);
-                finish();*/
+                finish();
 
             }
         });

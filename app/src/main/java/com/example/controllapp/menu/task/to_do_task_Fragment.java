@@ -1,5 +1,7 @@
 package com.example.controllapp.menu.task;
 
+import static com.example.controllapp.inicioUsuario.InicioSesion.listaTareas;
+
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -33,8 +35,6 @@ public class to_do_task_Fragment extends Fragment {
     private String informacion;
     private TextView tituloTarea, infoTarea;
 
-    public static List<Tareas> listaTareas;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -42,41 +42,37 @@ public class to_do_task_Fragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_to_do_task_, container, false);
 
-        estructura_tarea = getLayoutInflater().inflate(R.layout.task_estructure, null);
-
         // assignation
         ly = (LinearLayout) rootView.findViewById(R.id.taskBox);
         agregarTarea = (Button) rootView.findViewById(R.id.agregarTarea);
-        box = (LinearLayout) rootView.findViewById(R.id.taskBox);
-        prueba = (TextView) rootView.findViewById(R.id.prueba);
-
-        listaTareas = new ArrayList<Tareas>();
 
         // open other tab
         irAgregarInfo(rootView);
 
         // method to put all the info all ready created
         try {
-            infoGuardada(estructura_tarea, ly, rootView);
+            infoGuardada(ly, rootView);
         }catch (Exception E) {
             String mensaje = E.getMessage().toString();
             Toast.makeText(rootView.getContext(), mensaje, Toast.LENGTH_SHORT).show();
         }
 
         // method if the task is checked
-        //tareaFinalizada(estructura_tarea);
+        //tareaFinalizada(estructura_tarea, ly);
 
         return rootView;
 
     }
 
     // this method is created to insert all the info allready created en the bbdd
-    public void infoGuardada(View estructura_tarea, LinearLayout taskBox, View rootView){
+    public void infoGuardada(LinearLayout taskBox, View rootView){
 
         if (listaTareas.isEmpty()) {
             Toast.makeText(rootView.getContext(), "No hay nada", Toast.LENGTH_SHORT).show();
         }else{
             for(Tareas lista : listaTareas){
+
+                estructura_tarea = getLayoutInflater().inflate(R.layout.task_estructure, null);
 
                 tituloTarea = (TextView) estructura_tarea.findViewById(R.id.tituloTarea);
                 infoTarea = (TextView) estructura_tarea.findViewById(R.id.informacionTarea);
@@ -90,6 +86,9 @@ public class to_do_task_Fragment extends Fragment {
 
                 boolean activo =  lista.estaActivo();
 
+                if(estructura_tarea.getParent() != null) {
+                    ((ViewGroup) estructura_tarea.getParent()).removeView(estructura_tarea);
+                }
                 if(activo){
                     taskBox.addView(estructura_tarea);
                 }
@@ -109,9 +108,11 @@ public class to_do_task_Fragment extends Fragment {
         });
     }
 
-    public void tareaFinalizada(View estructura_tarea){
+    public void tareaFinalizada(View estructura_tarea, LinearLayout taskBox){
 
-        String titulo = String.valueOf((TextView) estructura_tarea.findViewById(R.id.tituloTarea));
+        View tarea = taskBox.getChildAt(0);
+        TextView title = tarea.findViewById(R.id.tituloTarea);
+        String titulo = title.getText().toString();
         CheckBox checked = (CheckBox) estructura_tarea.findViewById(R.id.confirmacion);
 
         if(checked.isChecked()){

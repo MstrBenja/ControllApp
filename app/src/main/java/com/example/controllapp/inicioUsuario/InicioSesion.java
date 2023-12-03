@@ -39,11 +39,11 @@ public class InicioSesion extends AppCompatActivity {
     private Controller conn;
     private List<User> listUser;
     private boolean verif;
+    public static List<Tareas> listaTareas;
 
     // MQTT ======================================================================
     private static final String BROKER_URL = "tcp://androidteststiqq.cloud.shiftr.io:1883";
     private static final String CLIENT_ID = "ControllApp";
-
     private mqttHandler mqttHandler;
     // MQTT ======================================================================
 
@@ -52,6 +52,8 @@ public class InicioSesion extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_iniciosesion);
 
+
+        listaTareas = new ArrayList<Tareas>();
 
         // MQTT ====================================================================
         try{
