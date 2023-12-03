@@ -24,7 +24,7 @@
             android:name=".menu.eventos.infoEventos"
             android:exported="false" />
         <activity
-            android:name=".menu.eventos.Eventos"
+            android:name=".menu.eventos.EventsMain"
             android:exported="false" />
         <activity
             android:name=".menu.info.Information"

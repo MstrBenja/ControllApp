@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.controllapp.R;
-import com.example.controllapp.menu.eventos.Eventos;
+import com.example.controllapp.menu.eventos.EventsMain;
 import com.example.controllapp.menu.info.Information;
 import com.example.controllapp.DB.Tasks;
 
@@ -36,7 +36,7 @@ public class Menu extends AppCompatActivity {
         eventos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent events = new Intent(Menu.this, Eventos.class);
+                Intent events = new Intent(Menu.this, EventsMain.class);
                 startActivity(events);
             }
         });
@@ -52,7 +52,7 @@ public class Menu extends AppCompatActivity {
     }// oncreate
 
     public void irEventos(View v){
-        Intent events = new Intent(Menu.this, Eventos.class);
+        Intent events = new Intent(Menu.this, EventsMain.class);
         startActivity(events);
     }// method
 

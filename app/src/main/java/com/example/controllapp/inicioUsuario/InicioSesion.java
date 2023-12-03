@@ -19,6 +19,7 @@ import com.example.controllapp.DB.User;
 import com.example.controllapp.MQTT.mqttHandler;
 import com.example.controllapp.menu.Menu;
 import com.example.controllapp.R;
+import com.example.controllapp.menu.eventos.Events;
 import com.example.controllapp.menu.task.Tareas;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
@@ -40,6 +41,7 @@ public class InicioSesion extends AppCompatActivity {
     private List<User> listUser;
     private boolean verif;
     public static List<Tareas> listaTareas;
+    public static List<Events> listaEventos;
 
     // MQTT ======================================================================
     private static final String BROKER_URL = "tcp://androidteststiqq.cloud.shiftr.io:1883";
@@ -54,6 +56,7 @@ public class InicioSesion extends AppCompatActivity {
 
 
         listaTareas = new ArrayList<Tareas>();
+        listaEventos = new ArrayList<Events>();
 
         // MQTT ====================================================================
         try{
