@@ -1,5 +1,6 @@
 package com.example.controllapp.menu.task;
 
+import static com.example.controllapp.inicioUsuario.InicioSesion.conn;
 import static com.example.controllapp.inicioUsuario.InicioSesion.listaTareas;
 
 import android.content.Intent;
@@ -70,27 +71,38 @@ public class to_do_task_Fragment extends Fragment {
         if (listaTareas.isEmpty()) {
             Toast.makeText(rootView.getContext(), "No hay nada", Toast.LENGTH_SHORT).show();
         }else{
-            for(Tareas lista : listaTareas){
 
-                estructura_tarea = getLayoutInflater().inflate(R.layout.task_estructure, null);
+            try{
+                listaTareas = conn.getTasks();
+            }catch(Exception E){
+                Toast.makeText(rootView.getContext(), E.getMessage().toString(), Toast.LENGTH_SHORT).show();
+            }
 
-                tituloTarea = (TextView) estructura_tarea.findViewById(R.id.tituloTarea);
-                infoTarea = (TextView) estructura_tarea.findViewById(R.id.informacionTarea);
+            if(listaTareas.isEmpty()){
 
-                informacion = lista.getInfo();
-                titulo = lista.getTitulo();
+            }else{
+                for(Tareas lista : listaTareas){
 
-                tituloTarea.setText(titulo);
-                infoTarea.setText(informacion);
+                    estructura_tarea = getLayoutInflater().inflate(R.layout.task_estructure, null);
+
+                    tituloTarea = (TextView) estructura_tarea.findViewById(R.id.tituloTarea);
+                    infoTarea = (TextView) estructura_tarea.findViewById(R.id.informacionTarea);
+
+                    informacion = lista.getInfo();
+                    titulo = lista.getTitulo();
+
+                    tituloTarea.setText(titulo);
+                    infoTarea.setText(informacion);
 
 
-                boolean activo =  lista.estaActivo();
+                    boolean activo =  lista.estaActivo();
 
-                if(estructura_tarea.getParent() != null) {
-                    ((ViewGroup) estructura_tarea.getParent()).removeView(estructura_tarea);
-                }
-                if(activo){
-                    taskBox.addView(estructura_tarea);
+                    if(estructura_tarea.getParent() != null) {
+                        ((ViewGroup) estructura_tarea.getParent()).removeView(estructura_tarea);
+                    }
+                    if(activo){
+                        taskBox.addView(estructura_tarea);
+                    }
                 }
             }
         }

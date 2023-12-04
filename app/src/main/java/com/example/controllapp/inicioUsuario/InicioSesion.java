@@ -25,23 +25,32 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.checkerframework.checker.units.qual.C;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class InicioSesion extends AppCompatActivity {
 
+    // Layout
     private Button login, register;
     private EditText usuarioUI, contrasenha;
     private Switch modo;
     private TextView titulo, comentario;
     private ConstraintLayout disenho;
-    private DatabaseReference dbReference;
-    private Controller conn;
+
+
+    // info in the code
     private List<User> listUser;
-    private boolean verif;
+
     public static List<Tareas> listaTareas;
     public static List<Events> listaEventos;
+
+    // DB
+    public static DatabaseReference dbReference;
+    public static Controller conn;
+
 
     // MQTT ======================================================================
     private static final String BROKER_URL = "tcp://androidteststiqq.cloud.shiftr.io:1883";
@@ -85,7 +94,11 @@ public class InicioSesion extends AppCompatActivity {
         comentario = (TextView) findViewById(R.id.commentUI);
         disenho = (ConstraintLayout) findViewById(R.id.disenho);
 
+
+        // DB
         Singleton.inicializar(getApplicationContext());
+        dbReference = Singleton.getDatabase(getApplicationContext());
+        conn = new Controller(dbReference);
 
         // register onclick function
         register.setOnClickListener(new View.OnClickListener() {
@@ -129,7 +142,6 @@ public class InicioSesion extends AppCompatActivity {
 
     private void verifyUser(View v){
 
-        conn = new Controller(dbReference);
         String userName = usuarioUI.getText().toString();
         String psw = contrasenha.getText().toString();
 
@@ -137,39 +149,38 @@ public class InicioSesion extends AppCompatActivity {
         usuario.setUserName(userName);
         usuario.setPassword(psw);
 
-        try {
-            listUser = conn.verificarUser(getApplicationContext(), usuario);
-        }catch (Exception E){
-            String mensaje  = E.getMessage().toString();
-            Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show();
-        }
+        boolean verif = estaRegistrado(usuario);
 
-        Toast.makeText(this, "Si pasó el try", Toast.LENGTH_SHORT).show();
-
-        /*
-        for(User lista : listUser){
-            if(lista.getUserName() == usuario.getUserName() && lista.getPassword() == usuario.getPassword()){
-                verif = true;
-                break;
-            }else{
-                verif = false;
-            }
-        }*/
-
-        //Data Base Verification
-        /*
         if(verif){
             Intent menu = new Intent(this, Menu.class);
             startActivity(menu);
             finish();
-
         }else{
+
+            Toast.makeText(this, "No existe este usuario", Toast.LENGTH_SHORT).show();
             usuarioUI.setText("");
             contrasenha.setText("");
-            Toast.makeText(this, "No se ha encontrado a nadie con esas credenciales...", Toast.LENGTH_LONG).show();
-        }*/
+        }
 
     }//method
+
+    public boolean estaRegistrado(User usuario){
+
+        List<User> lista = conn.getUsers(getApplicationContext(), usuario);
+
+        if(lista.isEmpty()){
+            return false;
+        }else{
+            for(User list : lista){
+                if(usuario.getUserName() == list.getUserName() &&
+                    usuario.getPassword() == list.getPassword()){
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
 
     private void cambiarModo(View v, Activity context){
 

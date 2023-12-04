@@ -7,6 +7,8 @@ import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
 
 import com.example.controllapp.inicioUsuario.InicioSesion;
+import com.example.controllapp.menu.eventos.Events;
+import com.example.controllapp.menu.task.Tareas;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -17,17 +19,18 @@ import java.util.List;
 public class DAO {
 
     private List<User> listUser;
+    private List<Tareas> listTask;
+    private List<Events> listEvents;
     private DatabaseReference dbreference;
-    ArrayAdapter<User> arrayAdapterUsuario;
     private boolean verificacion = false;
 
     public DAO(DatabaseReference dbreference){
         this.dbreference = dbreference;
     }
 
-    public List<User> verificarUser(Context context, User usuario) {
+    public List<User> retornarUsers(Context context, User usuario) {
 
-        dbreference.child("Usuario").addValueEventListener(new ValueEventListener() {
+        dbreference.child("Usuarios").addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -41,15 +44,56 @@ public class DAO {
             public void onCancelled(@NonNull DatabaseError error) { }
         });
         return listUser;
-    }
+    }// method
 
     public void registrarUser(User user) {
-        dbreference.child("Usuario").child(user.getId()).setValue(user);
+        dbreference.child("Usuarios").child(user.getId()).setValue(user);
+    }// method
+
+    public void registrarTask(Tareas tarea) {
+        dbreference.child("Tareas").child(tarea.getId()).setValue(tarea);
+    }// method
+
+    public List<Tareas> retornarTask() {
+
+        dbreference.child("Tareas").addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listTask.clear();
+                for(DataSnapshot objSnapshot : dataSnapshot.getChildren()){
+                    Tareas tarea = objSnapshot.getValue(Tareas.class);
+                    listTask.add(tarea);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) { }
+        });
+
+        return listTask;
+    }// method
+
+    public void registrarEvent(Events evento){
+        dbreference.child("Eventos").child(evento.getId()).setValue(evento);
     }
 
-    public void registrarTask() {
+    public List<Events> retornarEvents(){
+
+        dbreference.child("Eventos").addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listEvents.clear();
+                for(DataSnapshot objSnapshot : dataSnapshot.getChildren()){
+                    Events eventos = objSnapshot.getValue(Events.class);
+                    listEvents.add(eventos);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) { }
+        });
+
+        return listEvents;
     }
 
-    public void retornarTask() {
-    }
-}
+}// class

@@ -4,11 +4,13 @@ import android.widget.CheckBox;
 
 public class Tareas {
 
+    private String id;
     private String titulo;
     private String info;
     private boolean activo;
 
-    public Tareas (String title, String info, boolean active){
+    public Tareas (String id, String title, String info, boolean active){
+        this.id = id;
         this.titulo = title;
         this.info = info;
         this.activo = active;
@@ -36,5 +38,13 @@ public class Tareas {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

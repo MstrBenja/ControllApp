@@ -4,11 +4,13 @@ import com.google.firebase.annotations.concurrent.Background;
 
 public class Events {
 
+    private String id;
     private String texto;
     private boolean activo;
     private String background;
 
-    public Events(String texto, String background){
+    public Events(String id, String texto, String background){
+        this.id = id;
         this.texto = texto;
         this.background = background;
         this.activo = true;
@@ -36,5 +38,13 @@ public class Events {
 
     public void setBackground(String background) {
         this.background = background;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

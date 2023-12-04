@@ -1,5 +1,6 @@
 package com.example.controllapp.menu.task;
 
+import static com.example.controllapp.inicioUsuario.InicioSesion.conn;
 import static com.example.controllapp.inicioUsuario.InicioSesion.listaTareas;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,8 @@ import android.widget.Toast;
 import com.example.controllapp.DB.Tasks;
 import com.example.controllapp.R;
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.UUID;
 
 public class add_Task extends AppCompatActivity {
 
@@ -42,20 +45,23 @@ public class add_Task extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                // codigo bbbdd
+                if(titulo.equals("") || info.equals("")){
+                    Toast.makeText(add_Task.this, "Nada debe quedar en blanco!!", Toast.LENGTH_SHORT).show();
+                }else{
+                    String title = titulo.getText().toString();
+                    String information = info.getText().toString();
 
-                try {
-                    Tareas tarea = new Tareas(titulo.getText().toString(), info.getText().toString(), true);
-                    listaTareas.add(tarea);
-                }catch (Exception E){
-                    String mensaje = E.getMessage().toString();
-                    Toast.makeText(add_Task.this, mensaje, Toast.LENGTH_SHORT).show();
+                    try {
+                        Tareas tarea = new Tareas(UUID.randomUUID().toString(),title, information, true);
+                        conn.registrarTarea(tarea);
+                    }catch (Exception E){
+                        Toast.makeText(add_Task.this, E.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    Intent intent = new Intent(add_Task.this, Tasks.class);
+                    startActivity(intent);
+                    finish();
                 }
-
-                Intent tareas = new Intent(add_Task.this, Tasks.class);
-                startActivity(tareas);
-                finish();
-
             }
         });
     }

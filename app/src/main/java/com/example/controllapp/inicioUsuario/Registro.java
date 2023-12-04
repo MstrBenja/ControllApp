@@ -23,6 +23,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.List;
 import java.util.UUID;
 
 public class Registro extends AppCompatActivity {
@@ -40,7 +41,6 @@ public class Registro extends AppCompatActivity {
     private Singleton db;
     private Controller conn;
     private boolean respuesta;
-    public FirebaseDatabase database;
     public DatabaseReference dbReference;
 
 
@@ -68,6 +68,7 @@ public class Registro extends AppCompatActivity {
 
         dbReference = Singleton.getDatabase(getApplicationContext());
 
+
         goBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,40 +88,78 @@ public class Registro extends AppCompatActivity {
 
     private void registrar(View view){
 
-        conn = new Controller(dbReference);
+        int posicion = gender.getSelectedItemPosition();
 
-        User usuario = new User();
-        usuario.setId(UUID.randomUUID().toString());
-        usuario.setNombre(name.getText().toString().toLowerCase());
-        usuario.setCorreo(email.getText().toString().toLowerCase());
-        usuario.setEdad(Integer.parseInt(age.getText().toString()));
-        usuario.setGender(gender.getSelectedItem().toString());
-        usuario.setUserName(userName.getText().toString().toLowerCase());
-        usuario.setPassword(password.getText().toString());
+        if(email.equals("") ||
+                name.equals("") ||
+                Integer.parseInt(age.getText().toString()) < 0 ||
+                posicion == 0 ||
+                userName.equals("") || password.equals("")){
+
+            Toast.makeText(this, "Todos los campos deben estar rellenados", Toast.LENGTH_SHORT).show();
+
+        }else{
+
+            User usuario = new User();
+            usuario.setId(UUID.randomUUID().toString());
+            usuario.setNombre(name.getText().toString().toLowerCase());
+            usuario.setCorreo(email.getText().toString().toLowerCase());
+            usuario.setEdad(Integer.parseInt(age.getText().toString()));
+            usuario.setGender(gender.getSelectedItem().toString());
+            usuario.setUserName(userName.getText().toString().toLowerCase());
+            usuario.setPassword(password.getText().toString());
+
+            boolean verif = isRegistered(usuario);
+
+            if(!verif){
+
+                try {
+                    conn.registrarUser(usuario);
+                }catch (Exception E){
+                    String problema = E.getMessage();
+                    Toast.makeText(this, problema, Toast.LENGTH_SHORT).show();
+                }
+
+                AlertDialog.Builder mensaje = new AlertDialog.Builder(Registro.this);
+                mensaje.setCancelable(true);
+                mensaje.setTitle("Felicidades "+ usuario.getNombre());
+                mensaje.setMessage("Has sido registrado satisfactoriamente!");
+                mensaje.show();
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        regresar(new View(view.getContext()));
+                    }
+                },5000);
+
+            }else{
+
+                Toast.makeText(this, "Ya estás registrado", Toast.LENGTH_SHORT).show();
+
+            }// else
+        }// else
+    }// method
 
 
-        try {
-            conn.registrarUser(usuario);
+    public boolean isRegistered(User usuario){
 
-        }catch (Exception E){
-            String problema = E.getMessage();
-            Toast.makeText(this, problema, Toast.LENGTH_SHORT).show();
-        }
+        List<User> lista = conn.getUsers(getApplicationContext(), usuario);
 
-        /*
-        AlertDialog.Builder mensaje = new AlertDialog.Builder(Registro.this);
-        mensaje.setCancelable(true);
-        mensaje.setTitle("Felicidades "+ usuario.getNombre());
-        mensaje.setMessage("Has sido registrado satisfactoriamente!");
-        mensaje.show();*/
+        if (lista.isEmpty()){
+            return false;
+        }else{
+            for(User list : lista){
+                if(usuario.getUserName() == list.getUserName() &&
+                        usuario.getPassword() == list.getPassword() &&
+                        usuario.getNombre() == list.getNombre()){
 
-        /*
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                regresar(new View(view.getContext()));
+                    return true;
+
+                }
             }
-            },5000);*/
+        }
+        return false;
     }
 
     private void regresar(View view){
