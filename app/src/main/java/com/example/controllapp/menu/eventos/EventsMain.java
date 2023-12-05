@@ -1,17 +1,25 @@
 package com.example.controllapp.menu.eventos;
 
+import static com.example.controllapp.R.color.yellow;
 import static com.example.controllapp.inicioUsuario.InicioSesion.conn;
 import static com.example.controllapp.inicioUsuario.InicioSesion.listaEventos;
+import static com.example.controllapp.inicioUsuario.InicioSesion.listaTareas;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.LinearLayout;
@@ -31,10 +39,7 @@ public class EventsMain extends AppCompatActivity {
     private LinearLayout primerLayout, segundoLayout, tercerLayout, cuartoLayout, progresoEvento, eventsBox;
     private TableLayout tabla;
     private TableRow primeraFila, segundaFila, terceraFila, cuartaFila;
-    private Button agregar, evento;
-    private View estructura_evento;
-    public String textoBoton;
-    private TextView textoMostrar;
+    private Button agregar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,109 +103,132 @@ public class EventsMain extends AppCompatActivity {
                     GradientDrawable fondoBoton = new GradientDrawable();
                     fondoBoton.setShape(R.drawable.event_design);
 
-                    estructura_evento = getLayoutInflater().inflate(R.layout.estructure_event, null);
+                    View estructura_evento = getLayoutInflater().inflate(R.layout.estructure_event, null);
 
-                    evento = (Button) estructura_evento.findViewById(R.id.evento);
+                    Button evento = (Button) estructura_evento.findViewById(R.id.evento);
 
                     String texto = lista.getTexto().toString();
                     String color = "";
+                    String colorTexto = "";
 
-                    switch (lista.getBackground()) {
-                        case "Rojo":
-                            color = "#DF1313";
-                            fondoBoton.setColor(Color.parseColor(color));
 
-                            break;
-                        case "Amarillo":
-                            color = "#FFFF00";
-                            fondoBoton.setColor(Color.parseColor(color));
-                            break;
-                        case "Verde":
-                            color = "#13C116";
-                            fondoBoton.setColor(Color.parseColor(color));
-                            break;
-                        case "Negro":
-                            color = "#FF000000";
-                            fondoBoton.setColor(Color.parseColor(color));
-                            break;
-                        case "Azul":
-                            color = "#0F45E3";
-                            fondoBoton.setColor(Color.parseColor(color));
-                            break;
-                        case "Morado":
-                            color = "#6813DF";
-                            fondoBoton.setColor(Color.parseColor(color));
-                            break;
-                        case "Naranjo":
-                            color = "#B1691B";
-                            fondoBoton.setColor(Color.parseColor(color));
-                            break;
-                        case "Rosado":
-                            color = "#FFC0CB";
-                            fondoBoton.setColor(Color.parseColor(color));
-                            break;
-                        case "Celeste":
-                            color = "#0EC6D6";
-                            fondoBoton.setColor(Color.parseColor(color));
-                            break;
-                    }
+                    int colorId = verificarColor(lista.getBackground(), evento);
 
+                    evento.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, colorId)));
                     evento.setText(texto);
-                    evento.setBackground(fondoBoton);
-                    evento.setTextColor(Color.WHITE);
 
-                    boolean activo = lista.estaActivo();
+                    int fila = verificarFila();
 
-                    if (activo) {
-                        int fila = verificarFila();
 
-                        switch (fila) {
-                            case 1:
-                                primeraFila.addView(evento);
-                                evento.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        lista.setActivo(true);
-                                        //eventoPresionado(texto);
+                    switch (fila) {
+                        case 1:
+                            primeraFila.addView(evento);
+                            evento.setOnClickListener(new View.OnClickListener() {
+                                boolean botonPresionado = false;
+                                @Override
+                                public void onClick(View v) {
+                                    if(botonPresionado){
+                                        botonPresionado = false;
+                                        eventoPresionado(texto, botonPresionado);
+                                    }else{
+                                        botonPresionado = true;
+                                        eventoPresionado(texto, botonPresionado);
                                     }
-                                });
-                                break;
-                            case 2:
-                                segundaFila.addView(evento);
-                                evento.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        lista.setActivo(true);
-                                        //eventoPresionado(texto);
+                                }
+                            });
+                            break; case 2: segundaFila.addView(evento);
+                            evento.setOnClickListener(new View.OnClickListener() {
+                                boolean botonPresionado = false;
+                                @Override
+                                public void onClick(View v) {
+                                    if(botonPresionado){
+                                        botonPresionado = false;
+                                        eventoPresionado(texto, botonPresionado);
+                                    }else{
+                                        botonPresionado = true;
+                                        eventoPresionado(texto, botonPresionado);
                                     }
-                                });
-                                break;
-                            case 3:
-                                terceraFila.addView(evento);
-                                evento.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        lista.setActivo(true);
-                                        //eventoPresionado(texto);
+                                }
+                            });
+                            break; case 3: terceraFila.addView(evento);
+                            evento.setOnClickListener(new View.OnClickListener() {
+                                boolean botonPresionado = false;
+                                @Override
+                                public void onClick(View v) {
+                                    if(botonPresionado){
+                                        botonPresionado = false;
+                                        eventoPresionado(texto, botonPresionado);
+                                    }else{
+                                        botonPresionado = true;
+                                        eventoPresionado(texto, botonPresionado);
                                     }
-                                });
-                                break;
-                            case 4:
-                                cuartaFila.addView(evento);
-                                evento.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        lista.setActivo(true);
-                                        //eventoPresionado(texto);
+                                }
+                            });
+                            break; case 4: cuartaFila.addView(evento);
+                            evento.setOnClickListener(new View.OnClickListener() {
+                                boolean botonPresionado = false;
+                                @Override
+                                public void onClick(View v) {
+                                    if(botonPresionado){
+                                        botonPresionado = false;
+                                        eventoPresionado(texto, botonPresionado);
+                                    }else{
+                                        botonPresionado = true;
+                                        eventoPresionado(texto, botonPresionado);
                                     }
-                                });
-                                break;
-                        }
+                                }
+                            });
+                            break;
                     }
                 }
             }
         }
 
+    }
+
+    public int verificarColor(String color, Button boton){
+
+        int colorId = 0;
+
+        switch (color) {
+            case "Rojo":
+                colorId = R.color.red;
+                break;
+
+            case "Amarillo":
+                colorId = R.color.yellow;
+                break;
+
+            case "Verde":
+                colorId = R.color.green;
+                break;
+
+            case "Negro":
+                colorId = R.color.black;
+                break;
+
+            case "Azul":
+                colorId = R.color.blue;
+                break;
+
+            case "Morado":
+                colorId = R.color.purple;
+                break;
+
+            case "Naranjo":
+                colorId = R.color.orange;
+                break;
+
+            case "Rosado":
+                colorId = R.color.pink;
+                break;
+
+            case "Celeste":
+                colorId = R.color.sky;
+                break;
+        }
+
+        return colorId;
     }
 
     public int verificarFila(){
@@ -215,17 +243,24 @@ public class EventsMain extends AppCompatActivity {
         }
     }
 
-    public void eventoPresionado(String tituloEvento) {
+    public void eventoPresionado(String tituloEvento, boolean botonPresionado) {
         eventsBox = (LinearLayout) findViewById(R.id.eventsBox);
 
         View evento_activo = getLayoutInflater().inflate(R.layout.estructure_active_event, null);
         TextView title = evento_activo.findViewById(R.id.tituloEvents);
         TextView information = evento_activo.findViewById(R.id.infoEvents);
 
-        title.setText(tituloEvento);
-        information.setText("Acá debería ir un cronometro de monitorización de datos");
+        if(botonPresionado){
+            title.setText(tituloEvento);
+            information.setText("Acá debería ir un cronometro de monitorización de datos");
 
-        eventsBox.addView(evento_activo);
+            eventsBox.addView(evento_activo);
+        }else{
+            if (eventsBox.getChildCount() > 0) {
+                eventsBox.removeViewAt(0);
+            }
+
+        }
     }
 
     public void aMenuFromEvents(View v){

@@ -6,14 +6,12 @@ public class Events {
 
     private String id;
     private String texto;
-    private boolean activo;
     private String background;
 
     public Events(String id, String texto, String background){
         this.id = id;
         this.texto = texto;
         this.background = background;
-        this.activo = false;
     }
 
     public String getTexto() {
@@ -22,14 +20,6 @@ public class Events {
 
     public void setTexto(String texto) {
         this.texto = texto;
-    }
-
-    public boolean estaActivo() {
-        return activo;
-    }
-
-    public void setActivo(boolean activo) {
-        this.activo = activo;
     }
 
     public String getBackground() {

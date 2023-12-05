@@ -4,8 +4,6 @@
     android:id="@+id/evento"
     android:layout_width="82dp"
     android:layout_height="101dp"
-    android:background="@drawable/event_design"
-    android:backgroundTint="@android:color/background_dark"
     android:text="Button"
     android:textSize="10sp"
     />
