@@ -53,7 +53,8 @@ public class add_Event extends AppCompatActivity {
 
                     try {
                         Events evento = new Events(UUID.randomUUID().toString(), nombre, color);
-                        conn.registrarEvento(evento);
+                        //conn.registrarEvento(evento);
+                        listaEventos.add(evento);
                     }catch (Exception E){
                         Toast.makeText(add_Event.this, E.toString(), Toast.LENGTH_SHORT).show();
                     }

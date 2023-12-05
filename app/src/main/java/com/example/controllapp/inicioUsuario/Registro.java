@@ -1,5 +1,7 @@
 package com.example.controllapp.inicioUsuario;
 
+import static com.example.controllapp.inicioUsuario.InicioSesion.dao;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -89,12 +91,16 @@ public class Registro extends AppCompatActivity {
     private void registrar(View view){
 
         int posicion = gender.getSelectedItemPosition();
+        String correo = email.getText().toString();
+        String nombre = name.getText().toString();
+        String username = userName.getText().toString();
+        String contra = password.getText().toString();
 
-        if(email.equals("") ||
-                name.equals("") ||
+        if(correo.isEmpty() ||
+                nombre.isEmpty() ||
                 Integer.parseInt(age.getText().toString()) < 0 ||
                 posicion == 0 ||
-                userName.equals("") || password.equals("")){
+                username.isEmpty() || contra.isEmpty()){
 
             Toast.makeText(this, "Todos los campos deben estar rellenados", Toast.LENGTH_SHORT).show();
 
@@ -102,29 +108,35 @@ public class Registro extends AppCompatActivity {
 
             User usuario = new User();
             usuario.setId(UUID.randomUUID().toString());
-            usuario.setNombre(name.getText().toString().toLowerCase());
-            usuario.setCorreo(email.getText().toString().toLowerCase());
+            usuario.setNombre(name.getText().toString());
+            usuario.setCorreo(email.getText().toString());
             usuario.setEdad(Integer.parseInt(age.getText().toString()));
             usuario.setGender(gender.getSelectedItem().toString());
-            usuario.setUserName(userName.getText().toString().toLowerCase());
+            usuario.setUserName(userName.getText().toString());
             usuario.setPassword(password.getText().toString());
 
-            boolean verif = isRegistered(usuario);
+            boolean verif = true;
+            try {
+                verif = isRegistered(usuario);
+            }catch (Exception E){
+                Toast.makeText(this, E.getMessage().toString(), Toast.LENGTH_SHORT).show();
+            }
 
             if(!verif){
 
                 try {
-                    conn.registrarUser(usuario);
+                    dao.registrarUser(usuario);
                 }catch (Exception E){
-                    String problema = E.getMessage();
-                    Toast.makeText(this, problema, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, E.getMessage().toString(), Toast.LENGTH_SHORT).show();
                 }
+
 
                 AlertDialog.Builder mensaje = new AlertDialog.Builder(Registro.this);
                 mensaje.setCancelable(true);
                 mensaje.setTitle("Felicidades "+ usuario.getNombre());
                 mensaje.setMessage("Has sido registrado satisfactoriamente!");
                 mensaje.show();
+
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -144,9 +156,9 @@ public class Registro extends AppCompatActivity {
 
     public boolean isRegistered(User usuario){
 
-        List<User> lista = conn.getUsers(getApplicationContext(), usuario);
+        List<User> lista = dao.retornarUsers();
 
-        if (lista.isEmpty()){
+        if (lista == null){
             return false;
         }else{
             for(User list : lista){

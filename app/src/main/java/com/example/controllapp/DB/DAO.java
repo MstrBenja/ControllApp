@@ -1,14 +1,16 @@
 package com.example.controllapp.DB;
 
-import android.app.Activity;
+import static com.example.controllapp.inicioUsuario.InicioSesion.dbReference;
+
 import android.content.Context;
-import android.widget.ArrayAdapter;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.controllapp.inicioUsuario.InicioSesion;
 import com.example.controllapp.menu.eventos.Events;
 import com.example.controllapp.menu.task.Tareas;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,16 +23,19 @@ public class DAO {
     private List<User> listUser;
     private List<Tareas> listTask;
     private List<Events> listEvents;
-    private DatabaseReference dbreference;
     private boolean verificacion = false;
 
-    public DAO(DatabaseReference dbreference){
-        this.dbreference = dbreference;
+    public DAO(){
     }
 
-    public List<User> retornarUsers(Context context, User usuario) {
+    public interface DataCallback<T> {
+        void onDataLoaded(List<T> data);
+        void onError(String errorMessage);
+    }
 
-        dbreference.child("Usuarios").addValueEventListener(new ValueEventListener() {
+    public List<User> retornarUsers() {
+
+        dbReference.child("Usuarios").addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -47,16 +52,16 @@ public class DAO {
     }// method
 
     public void registrarUser(User user) {
-        dbreference.child("Usuarios").child(user.getId()).setValue(user);
+        dbReference.child("Usuarios").child(user.getId()).setValue(user);
     }// method
 
     public void registrarTask(Tareas tarea) {
-        dbreference.child("Tareas").child(tarea.getId()).setValue(tarea);
+        dbReference.child("Tareas").child(tarea.getId()).setValue(tarea);
     }// method
 
     public List<Tareas> retornarTask() {
 
-        dbreference.child("Tareas").addValueEventListener(new ValueEventListener() {
+        dbReference.child("Tareas").addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -74,12 +79,12 @@ public class DAO {
     }// method
 
     public void registrarEvent(Events evento){
-        dbreference.child("Eventos").child(evento.getId()).setValue(evento);
+        dbReference.child("Eventos").child(evento.getId()).setValue(evento);
     }
 
     public List<Events> retornarEvents(){
 
-        dbreference.child("Eventos").addValueEventListener(new ValueEventListener() {
+        dbReference.child("Eventos").addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

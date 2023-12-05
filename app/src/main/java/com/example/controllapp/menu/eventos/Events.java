@@ -13,7 +13,7 @@ public class Events {
         this.id = id;
         this.texto = texto;
         this.background = background;
-        this.activo = true;
+        this.activo = false;
     }
 
     public String getTexto() {

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.controllapp.DB.Controller;
+import com.example.controllapp.DB.DAO;
 import com.example.controllapp.DB.Singleton;
 import com.example.controllapp.DB.User;
 import com.example.controllapp.MQTT.mqttHandler;
@@ -21,15 +22,10 @@ import com.example.controllapp.menu.Menu;
 import com.example.controllapp.R;
 import com.example.controllapp.menu.eventos.Events;
 import com.example.controllapp.menu.task.Tareas;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class InicioSesion extends AppCompatActivity {
 
@@ -50,6 +46,7 @@ public class InicioSesion extends AppCompatActivity {
     // DB
     public static DatabaseReference dbReference;
     public static Controller conn;
+    public static DAO dao;
 
 
     // MQTT ======================================================================
@@ -99,6 +96,7 @@ public class InicioSesion extends AppCompatActivity {
         Singleton.inicializar(getApplicationContext());
         dbReference = Singleton.getDatabase(getApplicationContext());
         conn = new Controller(dbReference);
+        dao = new DAO();
 
         // register onclick function
         register.setOnClickListener(new View.OnClickListener() {
@@ -145,30 +143,34 @@ public class InicioSesion extends AppCompatActivity {
         String userName = usuarioUI.getText().toString();
         String psw = contrasenha.getText().toString();
 
-        User usuario = new User();
-        usuario.setUserName(userName);
-        usuario.setPassword(psw);
 
-        boolean verif = estaRegistrado(usuario);
-
-        if(verif){
-            Intent menu = new Intent(this, Menu.class);
-            startActivity(menu);
-            finish();
+        if(userName.isEmpty() || psw.isEmpty()){
+            Toast.makeText(this, "No debe estar nada vacio", Toast.LENGTH_SHORT).show();
         }else{
+            User usuario = new User();
+            usuario.setUserName(userName);
+            usuario.setPassword(psw);
 
-            Toast.makeText(this, "No existe este usuario", Toast.LENGTH_SHORT).show();
-            usuarioUI.setText("");
-            contrasenha.setText("");
+            boolean verif = estaRegistrado(usuario);
+
+            if(verif){
+                Intent menu = new Intent(this, Menu.class);
+                startActivity(menu);
+                finish();
+            }else{
+
+                Toast.makeText(this, "No existe este usuario", Toast.LENGTH_SHORT).show();
+                usuarioUI.setText("");
+                contrasenha.setText("");
+            }
         }
-
     }//method
 
     public boolean estaRegistrado(User usuario){
 
-        List<User> lista = conn.getUsers(getApplicationContext(), usuario);
+        List<User> lista = conn.getUsers();
 
-        if(lista.isEmpty()){
+        if(lista == null){
             return false;
         }else{
             for(User list : lista){

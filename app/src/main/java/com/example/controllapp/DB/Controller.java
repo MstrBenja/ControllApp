@@ -1,5 +1,7 @@
 package com.example.controllapp.DB;
 
+import static com.example.controllapp.inicioUsuario.InicioSesion.dao;
+
 import android.content.Context;
 
 import com.example.controllapp.menu.eventos.Events;
@@ -11,20 +13,17 @@ import java.util.List;
 public class Controller {
 
     private DatabaseReference db;
-    private DAO dao;
 
     public Controller (DatabaseReference db){
         this.db = db;
-        this.dao = new DAO(db);
     }
 
     public void registrarUser(User user){
-
         dao.registrarUser(user);
     }
 
-    public List<User> getUsers(Context context, User usuario){
-        List<User> verif = dao.retornarUsers(context, usuario);
+    public List<User> getUsers(){
+        List<User> verif = dao.retornarUsers();
         return verif;
     }
 
@@ -39,6 +38,11 @@ public class Controller {
 
     public void registrarEvento(Events evento){
         dao.registrarEvent(evento);
+    }
+
+    public List<Events> getEvents(){
+        List<Events> lista = dao.retornarEvents();
+        return lista;
     }
 
 }

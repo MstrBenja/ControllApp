@@ -9,31 +9,31 @@
     <!-- TODO: Update blank fragment layout -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="782dp">
 
-        <LinearLayout
-            android:layout_width="318dp"
-            android:layout_height="377dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/tareas"
+            android:layout_width="341dp"
+            android:layout_height="804dp"
             android:layout_marginTop="52dp"
-            android:orientation="vertical"
+            android:foregroundGravity="center"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.376"
+            app:layout_constraintHorizontal_bias="0.228"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" >
 
-            <TextView
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Acá se mostrarán las tareas hechas como información"
-                android:textAlignment="center" />
+                android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Button" />
+                <LinearLayout
+                    android:id="@+id/taskBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"/>
+            </ScrollView>
+        </androidx.cardview.widget.CardView>
 
-        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

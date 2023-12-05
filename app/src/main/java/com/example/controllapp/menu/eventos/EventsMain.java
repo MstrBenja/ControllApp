@@ -1,18 +1,19 @@
 package com.example.controllapp.menu.eventos;
 
+import static com.example.controllapp.inicioUsuario.InicioSesion.conn;
 import static com.example.controllapp.inicioUsuario.InicioSesion.listaEventos;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.shapes.Shape;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -22,11 +23,12 @@ import android.widget.Toast;
 import com.example.controllapp.R;
 import com.example.controllapp.menu.Menu;
 
-import java.util.ArrayList;
+import org.w3c.dom.Text;
 
 public class EventsMain extends AppCompatActivity {
 
-    private LinearLayout primerLayout, segundoLayout, tercerLayout, cuartoLayout, progresoEvento;
+    //private Chronometer chronometer;
+    private LinearLayout primerLayout, segundoLayout, tercerLayout, cuartoLayout, progresoEvento, eventsBox;
     private TableLayout tabla;
     private TableRow primeraFila, segundaFila, terceraFila, cuartaFila;
     private Button agregar, evento;
@@ -56,8 +58,6 @@ public class EventsMain extends AppCompatActivity {
         // Button
         agregar = (Button) findViewById(R.id.agregar);
 
-        textoMostrar = (TextView) findViewById(R.id.textoMostrar);
-
         // open activity to add event.
         agregar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,79 +83,119 @@ public class EventsMain extends AppCompatActivity {
         if(listaEventos.isEmpty()){
             Toast.makeText(this, "No hay nada", Toast.LENGTH_SHORT).show();
         }else{
-            for (Events lista: listaEventos){
+/*
+            try{
+                listaEventos = conn.getEvents();
+            }catch (Exception E){
+                Toast.makeText(this, E.getMessage(), Toast.LENGTH_SHORT).show();
+            }*/
 
-                GradientDrawable fondoBoton = new GradientDrawable();
-                fondoBoton.setShape(R.drawable.event_design);
+            if(listaEventos.isEmpty()){
+                Toast.makeText(this, "no hay nada", Toast.LENGTH_SHORT).show();
+            }else{
+                for (Events lista: listaEventos) {
 
-                estructura_evento = getLayoutInflater().inflate(R.layout.event_estructure, null);
+                    GradientDrawable fondoBoton = new GradientDrawable();
+                    fondoBoton.setShape(R.drawable.event_design);
 
-                evento = (Button) estructura_evento.findViewById(R.id.evento);
+                    estructura_evento = getLayoutInflater().inflate(R.layout.estructure_event, null);
 
-                String texto = lista.getTexto().toString();
-                String color = "";
+                    evento = (Button) estructura_evento.findViewById(R.id.evento);
 
-                switch (lista.getBackground()) {
-                    case "Rojo":
-                        color = "#DF1313";
-                        fondoBoton.setColor(Color.parseColor(color));
-                        break;
-                    case "Amarillo":
-                        color = "#FFFF00";
-                        fondoBoton.setColor(Color.parseColor(color));
-                        break;
-                    case "Verde":
-                        color = "#13C116";
-                        fondoBoton.setColor(Color.parseColor(color));
-                        break;
-                    case "Negro":
-                        color = "#FF000000";
-                        fondoBoton.setColor(Color.parseColor(color));
-                        break;
-                    case "Azul":
-                        color = "#0F45E3";
-                        fondoBoton.setColor(Color.parseColor(color));
-                        break;
-                    case "Morado":
-                        color = "#6813DF";
-                        fondoBoton.setColor(Color.parseColor(color));
-                        break;
-                    case "Naranjo":
-                        color = "#B1691B";
-                        fondoBoton.setColor(Color.parseColor(color));
-                        break;
-                    case "Rosado":
-                        color = "#FFC0CB";
-                        fondoBoton.setColor(Color.parseColor(color));
-                        break;
-                    case "Celeste":
-                        color = "#0EC6D6";
-                        fondoBoton.setColor(Color.parseColor(color));
-                        break;
-                }
+                    String texto = lista.getTexto().toString();
+                    String color = "";
 
-                evento.setText(texto);
-                evento.setBackground(fondoBoton);
-                evento.setTextColor(Color.WHITE);
+                    switch (lista.getBackground()) {
+                        case "Rojo":
+                            color = "#DF1313";
+                            fondoBoton.setColor(Color.parseColor(color));
 
-                boolean activo = lista.estaActivo();
-
-                if(activo){
-                    int fila = verificarFila();
-
-                    switch (fila){
-                        case 1:
-                            primeraFila.addView(evento);
                             break;
-                        case 2:
-                            segundaFila.addView(evento);
+                        case "Amarillo":
+                            color = "#FFFF00";
+                            fondoBoton.setColor(Color.parseColor(color));
                             break;
-                        case 3:
-                            terceraFila.addView(evento);
+                        case "Verde":
+                            color = "#13C116";
+                            fondoBoton.setColor(Color.parseColor(color));
                             break;
-                        case 4:
-                            cuartaFila.addView(evento);
+                        case "Negro":
+                            color = "#FF000000";
+                            fondoBoton.setColor(Color.parseColor(color));
                             break;
+                        case "Azul":
+                            color = "#0F45E3";
+                            fondoBoton.setColor(Color.parseColor(color));
+                            break;
+                        case "Morado":
+                            color = "#6813DF";
+                            fondoBoton.setColor(Color.parseColor(color));
+                            break;
+                        case "Naranjo":
+                            color = "#B1691B";
+                            fondoBoton.setColor(Color.parseColor(color));
+                            break;
+                        case "Rosado":
+                            color = "#FFC0CB";
+                            fondoBoton.setColor(Color.parseColor(color));
+                            break;
+                        case "Celeste":
+                            color = "#0EC6D6";
+                            fondoBoton.setColor(Color.parseColor(color));
+                            break;
+                    }
+
+                    evento.setText(texto);
+                    evento.setBackground(fondoBoton);
+                    evento.setTextColor(Color.WHITE);
+
+                    boolean activo = lista.estaActivo();
+
+                    if (activo) {
+                        int fila = verificarFila();
+
+                        switch (fila) {
+                            case 1:
+                                primeraFila.addView(evento);
+                                evento.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        lista.setActivo(true);
+                                        //eventoPresionado(texto);
+                                    }
+                                });
+                                break;
+                            case 2:
+                                segundaFila.addView(evento);
+                                evento.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        lista.setActivo(true);
+                                        //eventoPresionado(texto);
+                                    }
+                                });
+                                break;
+                            case 3:
+                                terceraFila.addView(evento);
+                                evento.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        lista.setActivo(true);
+                                        //eventoPresionado(texto);
+                                    }
+                                });
+                                break;
+                            case 4:
+                                cuartaFila.addView(evento);
+                                evento.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        lista.setActivo(true);
+                                        //eventoPresionado(texto);
+                                    }
+                                });
+                                break;
+                        }
                     }
                 }
             }
@@ -175,22 +215,17 @@ public class EventsMain extends AppCompatActivity {
         }
     }
 
-    public void eventoPresionado(){
+    public void eventoPresionado(String tituloEvento) {
+        eventsBox = (LinearLayout) findViewById(R.id.eventsBox);
 
-        estructura_evento = getLayoutInflater().inflate(R.layout.event_estructure, null);
+        View evento_activo = getLayoutInflater().inflate(R.layout.estructure_active_event, null);
+        TextView title = evento_activo.findViewById(R.id.tituloEvents);
+        TextView information = evento_activo.findViewById(R.id.infoEvents);
 
-        Button boton = estructura_evento.findViewById(R.id.evento);
+        title.setText(tituloEvento);
+        information.setText("Acá debería ir un cronometro de monitorización de datos");
 
-        evento.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String texto =  boton.getText().toString();
-                textoMostrar.setText(texto);
-
-            }
-        });
-
+        eventsBox.addView(evento_activo);
     }
 
     public void aMenuFromEvents(View v){

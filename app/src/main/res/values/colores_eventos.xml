@@ -3,6 +3,7 @@
 
     <string-array name="combo_colores">
 
+        <item>Elegir un color</item>
         <item>Rojo </item>
         <item>Amarillo</item>
         <item>Verde</item>

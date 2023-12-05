@@ -53,7 +53,8 @@ public class add_Task extends AppCompatActivity {
 
                     try {
                         Tareas tarea = new Tareas(UUID.randomUUID().toString(),title, information, true);
-                        conn.registrarTarea(tarea);
+                        //conn.registrarTarea(tarea);
+                        listaTareas.add(tarea);
                     }catch (Exception E){
                         Toast.makeText(add_Task.this, E.getMessage().toString(), Toast.LENGTH_SHORT).show();
                     }
