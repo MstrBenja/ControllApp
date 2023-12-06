@@ -1,5 +1,6 @@
 package com.example.controllapp.menu.task;
 
+import static com.example.controllapp.DB.BD.getDatabaseInstance;
 import static com.example.controllapp.inicioUsuario.InicioSesion.listaTareas;
 
 import android.os.Bundle;
@@ -9,16 +10,22 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.controllapp.DB.DAO;
+import com.example.controllapp.DB.Tareas;
 import com.example.controllapp.R;
+import com.example.controllapp.inicioUsuario.InicioSesion;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
 
 public class complete_tasks_Fragment extends Fragment {
 
     private LinearLayout taskBox;
+    private DAO dao;
+    private DatabaseReference dbReference;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -28,6 +35,9 @@ public class complete_tasks_Fragment extends Fragment {
 
         // assignation
         taskBox = (LinearLayout) rootView.findViewById(R.id.taskBox);
+
+        dbReference = getDatabaseInstance(rootView.getContext());
+        dao = new DAO(getDatabaseInstance(rootView.getContext()));
 
         // method to put all the info all ready created
         try {
@@ -42,12 +52,12 @@ public class complete_tasks_Fragment extends Fragment {
 
     // this method is created to insert all the info allready created en the bbdd
     public void infoGuardada(View rootView){
-/*
+
             try{
-                listaTareas = conn.getTasks();
+                listaTareas = dao.retornarTask(dbReference);
             }catch(Exception E){
                 Toast.makeText(rootView.getContext(), E.getMessage().toString(), Toast.LENGTH_SHORT).show();
-            }*/
+            }
 
             if(!listaTareas.isEmpty()){
 

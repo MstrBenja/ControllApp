@@ -1,5 +1,8 @@
 package com.example.controllapp.inicioUsuario;
 
+import static com.example.controllapp.DB.BD.getDatabaseInstance;
+import static com.example.controllapp.DB.BD.inicializarFirebase;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -13,15 +16,13 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.controllapp.DB.Controller;
 import com.example.controllapp.DB.DAO;
-import com.example.controllapp.DB.Singleton;
 import com.example.controllapp.DB.User;
 import com.example.controllapp.MQTT.mqttHandler;
 import com.example.controllapp.menu.Menu;
 import com.example.controllapp.R;
-import com.example.controllapp.menu.eventos.Events;
-import com.example.controllapp.menu.task.Tareas;
+import com.example.controllapp.DB.Events;
+import com.example.controllapp.DB.Tareas;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class InicioSesion extends AppCompatActivity {
     private ConstraintLayout disenho;
 
 
+
     // info in the code
     private List<User> listUser;
 
@@ -44,9 +46,8 @@ public class InicioSesion extends AppCompatActivity {
     public static List<Events> listaEventos;
 
     // DB
-    public static DatabaseReference dbReference;
-    public static Controller conn;
-    public static DAO dao;
+    private DatabaseReference dbReference;
+    public DAO dao;
 
 
     // MQTT ======================================================================
@@ -93,10 +94,9 @@ public class InicioSesion extends AppCompatActivity {
 
 
         // DB
-        Singleton.inicializar(getApplicationContext());
-        dbReference = Singleton.getDatabase(getApplicationContext());
-        conn = new Controller(dbReference);
-        dao = new DAO();
+        inicializarFirebase(this);
+        dbReference = getDatabaseInstance(this);
+        dao = new DAO(getDatabaseInstance(this));
 
         // register onclick function
         register.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +110,7 @@ public class InicioSesion extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                irMenu(view);
+                verifyUser(view);
             }
         });
 
@@ -129,7 +129,6 @@ public class InicioSesion extends AppCompatActivity {
     protected void onDestroy() {
         mqttHandler.disconnect();
         super.onDestroy();
-
     }
 
     private void irRegistro(View v){
@@ -147,16 +146,14 @@ public class InicioSesion extends AppCompatActivity {
         if(userName.isEmpty() || psw.isEmpty()){
             Toast.makeText(this, "No debe estar nada vacio", Toast.LENGTH_SHORT).show();
         }else{
-            User usuario = new User();
-            usuario.setUserName(userName);
-            usuario.setPassword(psw);
+
+            User usuario = new User(userName, psw);
 
             boolean verif = estaRegistrado(usuario);
 
             if(verif){
-                Intent menu = new Intent(this, Menu.class);
-                startActivity(menu);
-                finish();
+                dao.usuarioConectado(usuario);
+                irMenu(v);
             }else{
 
                 Toast.makeText(this, "No existe este usuario", Toast.LENGTH_SHORT).show();
@@ -168,7 +165,14 @@ public class InicioSesion extends AppCompatActivity {
 
     public boolean estaRegistrado(User usuario){
 
-        List<User> lista = conn.getUsers();
+        List<User> lista = null;
+
+        try {
+            lista = dao.retornarUsers(dbReference);
+        }catch (Exception E){
+            Toast.makeText(this, E.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
 
         if(lista == null){
             return false;

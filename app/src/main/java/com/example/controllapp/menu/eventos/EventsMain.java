@@ -1,37 +1,28 @@
 package com.example.controllapp.menu.eventos;
 
-import static com.example.controllapp.R.color.yellow;
-import static com.example.controllapp.inicioUsuario.InicioSesion.conn;
+import static com.example.controllapp.DB.BD.getDatabaseInstance;
 import static com.example.controllapp.inicioUsuario.InicioSesion.listaEventos;
-import static com.example.controllapp.inicioUsuario.InicioSesion.listaTareas;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.SystemClock;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.controllapp.DB.DAO;
+import com.example.controllapp.DB.Events;
 import com.example.controllapp.R;
 import com.example.controllapp.menu.Menu;
-
-import org.w3c.dom.Text;
+import com.google.firebase.database.DatabaseReference;
 
 public class EventsMain extends AppCompatActivity {
 
@@ -40,6 +31,8 @@ public class EventsMain extends AppCompatActivity {
     private TableLayout tabla;
     private TableRow primeraFila, segundaFila, terceraFila, cuartaFila;
     private Button agregar;
+    private DAO dao;
+    private DatabaseReference dbReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +53,9 @@ public class EventsMain extends AppCompatActivity {
         cuartaFila = (TableRow) findViewById(R.id.fourthTableRow);
         tabla = (TableLayout) findViewById(R.id.tabla);
 
+        dao = new DAO(getDatabaseInstance(this));
+        dbReference = getDatabaseInstance(this);
+
         // Button
         agregar = (Button) findViewById(R.id.agregar);
 
@@ -78,8 +74,6 @@ public class EventsMain extends AppCompatActivity {
         }
 
 
-        //eventoPresionado();
-
     }// onCreate
 
 
@@ -88,12 +82,12 @@ public class EventsMain extends AppCompatActivity {
         if(listaEventos.isEmpty()){
             Toast.makeText(this, "No hay nada", Toast.LENGTH_SHORT).show();
         }else{
-/*
+
             try{
-                listaEventos = conn.getEvents();
+                listaEventos = dao.retornarEvents(dbReference);
             }catch (Exception E){
                 Toast.makeText(this, E.getMessage(), Toast.LENGTH_SHORT).show();
-            }*/
+            }
 
             if(listaEventos.isEmpty()){
                 Toast.makeText(this, "no hay nada", Toast.LENGTH_SHORT).show();

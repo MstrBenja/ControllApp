@@ -1,6 +1,6 @@
 package com.example.controllapp.inicioUsuario;
 
-import static com.example.controllapp.inicioUsuario.InicioSesion.dao;
+import static com.example.controllapp.DB.BD.getDatabaseInstance;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,13 +17,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.controllapp.DB.Controller;
-import com.example.controllapp.DB.Singleton;
+import com.example.controllapp.DB.DAO;
 import com.example.controllapp.DB.User;
 import com.example.controllapp.R;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 import java.util.UUID;
@@ -40,10 +37,9 @@ public class Registro extends AppCompatActivity {
     // other
     private Spinner gender;
     private ScrollView diseno;
-    private Singleton db;
-    private Controller conn;
     private boolean respuesta;
     public DatabaseReference dbReference;
+    private DAO dao;
 
 
     @Override
@@ -68,8 +64,8 @@ public class Registro extends AppCompatActivity {
         ArrayAdapter <CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.combo_genero , androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
         gender.setAdapter(adapter);
 
-        dbReference = Singleton.getDatabase(getApplicationContext());
-
+        dbReference = getDatabaseInstance(this);
+        dao = new DAO(getDatabaseInstance(this));
 
         goBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +112,7 @@ public class Registro extends AppCompatActivity {
             usuario.setPassword(password.getText().toString());
 
             boolean verif = true;
+
             try {
                 verif = isRegistered(usuario);
             }catch (Exception E){
@@ -125,11 +122,10 @@ public class Registro extends AppCompatActivity {
             if(!verif){
 
                 try {
-                    dao.registrarUser(usuario);
+                    dao.registrarUser(dbReference, usuario);
                 }catch (Exception E){
                     Toast.makeText(this, E.getMessage().toString(), Toast.LENGTH_SHORT).show();
                 }
-
 
                 AlertDialog.Builder mensaje = new AlertDialog.Builder(Registro.this);
                 mensaje.setCancelable(true);
@@ -156,7 +152,7 @@ public class Registro extends AppCompatActivity {
 
     public boolean isRegistered(User usuario){
 
-        List<User> lista = dao.retornarUsers();
+        List<User> lista = dao.retornarUsers(dbReference);
 
         if (lista == null){
             return false;
@@ -167,7 +163,6 @@ public class Registro extends AppCompatActivity {
                         usuario.getNombre() == list.getNombre()){
 
                     return true;
-
                 }
             }
         }

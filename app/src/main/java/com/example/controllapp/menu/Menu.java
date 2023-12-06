@@ -10,7 +10,7 @@ import android.widget.Button;
 import com.example.controllapp.R;
 import com.example.controllapp.menu.eventos.EventsMain;
 import com.example.controllapp.menu.info.Information;
-import com.example.controllapp.DB.Tasks;
+import com.example.controllapp.menu.task.Tasks;
 
 public class Menu extends AppCompatActivity {
 

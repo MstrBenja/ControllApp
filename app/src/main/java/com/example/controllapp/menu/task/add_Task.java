@@ -1,6 +1,6 @@
 package com.example.controllapp.menu.task;
 
-import static com.example.controllapp.inicioUsuario.InicioSesion.conn;
+import static com.example.controllapp.DB.BD.getDatabaseInstance;
 import static com.example.controllapp.inicioUsuario.InicioSesion.listaTareas;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,9 +13,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.controllapp.DB.Tasks;
+import com.example.controllapp.DB.DAO;
+import com.example.controllapp.DB.Tareas;
 import com.example.controllapp.R;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.UUID;
 
@@ -24,12 +26,17 @@ public class add_Task extends AppCompatActivity {
     private EditText titulo;
     private TextInputEditText info;
     private Button agregar;
-    private TextView texto;
+    private DatabaseReference dbReference;
+
+    private DAO dao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
+
+        dbReference = getDatabaseInstance(this);
+        dao = new DAO(getDatabaseInstance(this));
 
         titulo = (EditText) findViewById(R.id.tituloName);
         info = (TextInputEditText) findViewById(R.id.informacion);
@@ -53,7 +60,7 @@ public class add_Task extends AppCompatActivity {
 
                     try {
                         Tareas tarea = new Tareas(UUID.randomUUID().toString(),title, information, true);
-                        //conn.registrarTarea(tarea);
+                        dao.registrarTask(dbReference, tarea);
                         listaTareas.add(tarea);
                     }catch (Exception E){
                         Toast.makeText(add_Task.this, E.getMessage().toString(), Toast.LENGTH_SHORT).show();

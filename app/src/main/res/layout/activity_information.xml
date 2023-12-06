@@ -47,40 +47,49 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bodyLayout"
-        android:layout_width="408dp"
-        android:layout_height="786dp"
+        android:layout_width="342dp"
+        android:layout_height="614dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fondoHeader">
 
-        <Button
-            android:id="@+id/infoEventos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Información de eventos"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <ScrollView
-            android:layout_width="365dp"
+            android:layout_width="match_parent"
             android:layout_height="822dp"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="48dp"
             android:contentDescription="@string/app_name"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.511"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/infoEventos">
+            app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/Infomation"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/information" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/infoNombreUsuario"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:layout_marginBottom="20dp"/>
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Información de uso de la aplicación"
+                    android:layout_marginBottom="20dp"/>
+
+                <TextView
+                    android:id="@+id/infoApp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""/>
+            </LinearLayout>
         </ScrollView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

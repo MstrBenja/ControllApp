@@ -1,6 +1,6 @@
 package com.example.controllapp.menu.eventos;
 
-import static com.example.controllapp.inicioUsuario.InicioSesion.conn;
+import static com.example.controllapp.DB.BD.getDatabaseInstance;
 import static com.example.controllapp.inicioUsuario.InicioSesion.listaEventos;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +14,10 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.controllapp.DB.DAO;
+import com.example.controllapp.DB.Events;
 import com.example.controllapp.R;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.UUID;
 
@@ -23,10 +26,15 @@ public class add_Event extends AppCompatActivity {
     private EditText nombreEvento;
     private Button agregar;
     private Spinner colores;
+    private DatabaseReference dbReference;
+    private DAO dao;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
+
+        dbReference = getDatabaseInstance(this);
+        dao = new DAO(getDatabaseInstance(this));
 
         nombreEvento = (EditText) findViewById(R.id.eventName);
         agregar = (Button) findViewById(R.id.agregar);
@@ -53,7 +61,7 @@ public class add_Event extends AppCompatActivity {
 
                     try {
                         Events evento = new Events(UUID.randomUUID().toString(), nombre, color);
-                        //conn.registrarEvento(evento);
+                        dao.registrarEvent(dbReference, evento);
                         listaEventos.add(evento);
                     }catch (Exception E){
                         Toast.makeText(add_Event.this, E.toString(), Toast.LENGTH_SHORT).show();

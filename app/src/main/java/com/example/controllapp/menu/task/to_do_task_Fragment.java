@@ -1,5 +1,6 @@
 package com.example.controllapp.menu.task;
 
+import static com.example.controllapp.DB.BD.getDatabaseInstance;
 import static com.example.controllapp.inicioUsuario.InicioSesion.listaTareas;
 
 import android.content.Intent;
@@ -17,7 +18,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.controllapp.DB.DAO;
+import com.example.controllapp.DB.Tareas;
 import com.example.controllapp.R;
+import com.google.firebase.database.DatabaseReference;
 
 public class to_do_task_Fragment extends Fragment {
     private Button agregarTarea;
@@ -27,6 +31,8 @@ public class to_do_task_Fragment extends Fragment {
     private String informacion;
     private TextView tituloTarea, infoTarea;
     private CheckBox checked;
+    private DAO dao;
+    private DatabaseReference dbReference;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,6 +43,9 @@ public class to_do_task_Fragment extends Fragment {
         // assignation
         ly = (LinearLayout) rootView.findViewById(R.id.taskBox);
         agregarTarea = (Button) rootView.findViewById(R.id.agregarTarea);
+
+        dbReference = getDatabaseInstance(rootView.getContext());
+        dao = new DAO(getDatabaseInstance(rootView.getContext()));
 
         // open other tab
         irAgregarInfo(rootView);
@@ -62,7 +71,7 @@ public class to_do_task_Fragment extends Fragment {
         }else{
 /*
             try{
-                listaTareas = conn.getTasks();
+                listaTareas = dao.retornarTareas();
             }catch(Exception E){
                 Toast.makeText(rootView.getContext(), E.getMessage().toString(), Toast.LENGTH_SHORT).show();
             }*/

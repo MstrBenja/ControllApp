@@ -1,4 +1,4 @@
-package com.example.controllapp.DB;
+package com.example.controllapp.menu.task;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;

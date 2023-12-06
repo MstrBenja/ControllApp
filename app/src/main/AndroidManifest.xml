@@ -30,7 +30,7 @@
             android:name=".menu.info.Information"
             android:exported="false" />
         <activity
-            android:name=".DB.Tasks"
+            android:name=".menu.task.Tasks"
             android:exported="false" />
         <activity
             android:name=".inicioUsuario.Registro"

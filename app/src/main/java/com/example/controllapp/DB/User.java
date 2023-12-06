@@ -1,5 +1,7 @@
 package com.example.controllapp.DB;
 
+import java.util.List;
+
 public class User {
 
     private String id;
@@ -9,6 +11,8 @@ public class User {
     private String gender;
     private String userName;
     private String password;
+    private List<Tareas> tareas;
+    private List<Events> eventos;
 
     public User (String id, String gmail, String name, int age, String gender, String user, String psw){
         this.id = id;
@@ -83,5 +87,21 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Tareas> getTareas() {
+        return tareas;
+    }
+
+    public void setTareas(Tareas tareas) {
+        this.tareas.add(tareas);
+    }
+
+    public List<Events> getEventos() {
+        return eventos;
+    }
+
+    public void setEventos(Events eventos) {
+        this.eventos.add(eventos);
     }
 }
