@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.controllapp.DB.DAO;
+import com.example.controllapp.DB.DataStatusManager;
 import com.example.controllapp.DB.Events;
 import com.example.controllapp.R;
 import com.google.firebase.database.DatabaseReference;
@@ -61,7 +62,17 @@ public class add_Event extends AppCompatActivity {
 
                     try {
                         Events evento = new Events(UUID.randomUUID().toString(), nombre, color);
-                        dao.registrarEvent(dbReference, evento);
+                        dao.registrarEvent(dbReference, evento, new DataStatusManager.WriteEvents() {
+                            @Override
+                            public void onEventsWriteSuccess() {
+                                Toast.makeText(add_Event.this, "Se ha guardado el evento!", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onEventsWriteFailure(String errorMessage) {
+                                Toast.makeText(add_Event.this, "No se ha podido guardar el evento!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         listaEventos.add(evento);
                     }catch (Exception E){
                         Toast.makeText(add_Event.this, E.toString(), Toast.LENGTH_SHORT).show();

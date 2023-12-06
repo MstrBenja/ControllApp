@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.controllapp.DB.DAO;
+import com.example.controllapp.DB.DataStatusManager;
 import com.example.controllapp.DB.Events;
 import com.example.controllapp.R;
 import com.example.controllapp.menu.Menu;
@@ -84,7 +85,17 @@ public class EventsMain extends AppCompatActivity {
         }else{
 
             try{
-                listaEventos = dao.retornarEvents(dbReference);
+                dao.retornarEvents(dbReference, new DataStatusManager.GetEvents() {
+                    @Override
+                    public void onEventsGet(Events events) {
+                        listaEventos.add(events);
+                    }
+
+                    @Override
+                    public void onEventsGetFailed(String errorMessage) {
+                        Toast.makeText(EventsMain.this, "Ha ocurrido un error al cargar los eventos", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }catch (Exception E){
                 Toast.makeText(this, E.getMessage(), Toast.LENGTH_SHORT).show();
             }

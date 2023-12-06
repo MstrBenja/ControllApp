@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.controllapp.DB.DAO;
+import com.example.controllapp.DB.DataStatusManager;
 import com.example.controllapp.DB.User;
 import com.example.controllapp.MQTT.mqttHandler;
 import com.example.controllapp.menu.Menu;
@@ -48,6 +49,7 @@ public class InicioSesion extends AppCompatActivity {
     // DB
     private DatabaseReference dbReference;
     public DAO dao;
+    private boolean verif;
 
 
     // MQTT ======================================================================
@@ -165,27 +167,30 @@ public class InicioSesion extends AppCompatActivity {
 
     public boolean estaRegistrado(User usuario){
 
-        List<User> lista = null;
+        verif = false;
 
-        try {
-            lista = dao.retornarUsers(dbReference);
-        }catch (Exception E){
-            Toast.makeText(this, E.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-
-
-        if(lista == null){
-            return false;
-        }else{
-            for(User list : lista){
-                if(usuario.getUserName() == list.getUserName() &&
-                    usuario.getPassword() == list.getPassword()){
-                    return true;
+        dao.retornarUsers(dbReference, new DataStatusManager.ReadUsers() {
+            @Override
+            public void onUsersLoaded(List<User> listaUsuarios) {
+                if(listaUsuarios == null){
+                    verif = false;
+                }else{
+                    for(User list : listaUsuarios){
+                        if(usuario.getUserName() == list.getUserName() &&
+                                usuario.getPassword() == list.getPassword()){
+                            verif = true;
+                            return;
+                        }
+                    }
                 }
             }
-        }
-        return false;
 
+            @Override
+            public void onUsersLoadFailed(String errorMessage) {
+                Toast.makeText(InicioSesion.this, "Error al cargar la lista de Usuarios", Toast.LENGTH_SHORT).show();
+            }
+        });
+        return verif;
     }
 
     private void cambiarModo(View v, Activity context){

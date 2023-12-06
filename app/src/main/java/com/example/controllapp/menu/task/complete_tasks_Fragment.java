@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.controllapp.DB.DAO;
+import com.example.controllapp.DB.DataStatusManager;
 import com.example.controllapp.DB.Tareas;
 import com.example.controllapp.R;
 import com.example.controllapp.inicioUsuario.InicioSesion;
@@ -54,7 +55,17 @@ public class complete_tasks_Fragment extends Fragment {
     public void infoGuardada(View rootView){
 
             try{
-                listaTareas = dao.retornarTask(dbReference);
+                dao.retornarTask(dbReference, new DataStatusManager.GetTasks() {
+                    @Override
+                    public void onTasksGet(Tareas tareas) {
+                        listaTareas.add(tareas);
+                    }
+
+                    @Override
+                    public void onTasksGetFailed(String errorMessage) {
+                        Toast.makeText(rootView.getContext(), "Ha habido un problema con retornar las tareas", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }catch(Exception E){
                 Toast.makeText(rootView.getContext(), E.getMessage().toString(), Toast.LENGTH_SHORT).show();
             }

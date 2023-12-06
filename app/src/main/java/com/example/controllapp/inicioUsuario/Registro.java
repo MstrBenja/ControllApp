@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.controllapp.DB.DAO;
+import com.example.controllapp.DB.DataStatusManager;
 import com.example.controllapp.DB.User;
 import com.example.controllapp.R;
 import com.google.firebase.database.DatabaseReference;
@@ -40,6 +41,7 @@ public class Registro extends AppCompatActivity {
     private boolean respuesta;
     public DatabaseReference dbReference;
     private DAO dao;
+    private boolean verif;
 
 
     @Override
@@ -111,7 +113,7 @@ public class Registro extends AppCompatActivity {
             usuario.setUserName(userName.getText().toString());
             usuario.setPassword(password.getText().toString());
 
-            boolean verif = true;
+            verif = true;
 
             try {
                 verif = isRegistered(usuario);
@@ -122,17 +124,24 @@ public class Registro extends AppCompatActivity {
             if(!verif){
 
                 try {
-                    dao.registrarUser(dbReference, usuario);
+                    dao.registrarUser(dbReference, usuario, new DataStatusManager.WriteUsers() {
+                        @Override
+                        public void onUsersWriteSuccess() {
+                            AlertDialog.Builder mensaje = new AlertDialog.Builder(Registro.this);
+                            mensaje.setCancelable(true);
+                            mensaje.setTitle("Felicidades "+ usuario.getNombre());
+                            mensaje.setMessage("Has sido registrado satisfactoriamente!");
+                            mensaje.show();
+                        }
+
+                        @Override
+                        public void onUsersWriteFailure(String errorMessage) {
+                            Toast.makeText(Registro.this, "No se ha podido guardar tu usuario...", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }catch (Exception E){
                     Toast.makeText(this, E.getMessage().toString(), Toast.LENGTH_SHORT).show();
                 }
-
-                AlertDialog.Builder mensaje = new AlertDialog.Builder(Registro.this);
-                mensaje.setCancelable(true);
-                mensaje.setTitle("Felicidades "+ usuario.getNombre());
-                mensaje.setMessage("Has sido registrado satisfactoriamente!");
-                mensaje.show();
-
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -152,21 +161,33 @@ public class Registro extends AppCompatActivity {
 
     public boolean isRegistered(User usuario){
 
-        List<User> lista = dao.retornarUsers(dbReference);
+        verif = false;
 
-        if (lista == null){
-            return false;
-        }else{
-            for(User list : lista){
-                if(usuario.getUserName() == list.getUserName() &&
-                        usuario.getPassword() == list.getPassword() &&
-                        usuario.getNombre() == list.getNombre()){
+        dao.retornarUsers(dbReference, new DataStatusManager.ReadUsers() {
+            @Override
+            public void onUsersLoaded(List<User> listaUsuarios) {
+                if (listaUsuarios == null){
+                    verif = false;
+                }else{
+                    for(User list : listaUsuarios){
+                        if(usuario.getUserName() == list.getUserName() &&
+                                usuario.getPassword() == list.getPassword() &&
+                                usuario.getNombre() == list.getNombre()){
 
-                    return true;
+                            verif = true;
+                        }
+                    }
                 }
             }
-        }
-        return false;
+
+            @Override
+            public void onUsersLoadFailed(String errorMessage) {
+
+            }
+        });
+
+        return verif;
+
     }
 
     private void regresar(View view){

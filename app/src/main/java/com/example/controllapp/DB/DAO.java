@@ -1,8 +1,12 @@
 package com.example.controllapp.DB;
 
 
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,6 +25,10 @@ public class DAO {
     private User usuarioConectado;
 
     public DAO(DatabaseReference dbReference){
+
+        listUser = new ArrayList<User>();
+        listTask = new ArrayList<Tareas>();
+        listEvents = new ArrayList<Events>();
         this.dbReference = dbReference;
     }
 
@@ -28,17 +36,25 @@ public class DAO {
 
     public void usuarioConectado(User usuario){
 
-        List<User> lista = retornarUsers(dbReference);
 
-        for(User listaUsuarios : lista){
-            if(usuario.getUserName() == listaUsuarios.getUserName() &&
-                    usuario.getPassword() == listaUsuarios.getPassword() &&
-                    usuario.getNombre() == listaUsuarios.getNombre()){
+        retornarUsers(dbReference, new DataStatusManager.ReadUsers() {
+            @Override
+            public void onUsersLoaded(List<User> listaUsuarios) {
+                for(User lista : listaUsuarios){
+                    if(usuario.getUserName() == lista.getUserName() &&
+                            usuario.getPassword() == lista.getPassword() &&
+                            usuario.getNombre() == lista.getNombre()){
 
-                this.usuarioConectado = listaUsuarios;
-                break;
+                        DAO.this.usuarioConectado = lista;
+                    }
+                }
             }
-        }
+
+            @Override
+            public void onUsersLoadFailed(String errorMessage) {
+
+            }
+        });
     }
 
     public User getUsuarioConectado(){
@@ -46,7 +62,7 @@ public class DAO {
     }
 
 
-    public List<User> retornarUsers(DatabaseReference dbReference) {
+    public void retornarUsers(DatabaseReference dbReference, final DataStatusManager.ReadUsers readDataStatus ) {
 
         dbReference.child("Usuarios").addValueEventListener(new ValueEventListener() {
 
@@ -57,43 +73,67 @@ public class DAO {
                     User usuario = objSnapshot.getValue(User.class);
                     listUser.add(usuario);
                 }
+                readDataStatus.onUsersLoaded(listUser);
             }
             @Override
-            public void onCancelled(@NonNull DatabaseError error) { }
+            public void onCancelled(@NonNull DatabaseError error) {
+                readDataStatus.onUsersLoadFailed(error.getMessage());
+            }
         });
-        return listUser;
     }// method
 
 
 
-    public void registrarUser(DatabaseReference dbReference,User user) {
-        dbReference.child("Usuarios").child(user.getId()).setValue(user);
+    public void registrarUser(DatabaseReference dbReference,User user, final DataStatusManager.WriteUsers writeUserStatus) {
+
+        DatabaseReference usersRef = dbReference.child("Usuarios");
+
+        usersRef.orderByChild("id").equalTo(user.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                
+                if(snapshot.exists()){
+                    writeUserStatus.onUsersWriteFailure("El usuario ya está registrado");
+                }else{
+                    usersRef.child(user.getId()).setValue(user);
+                    writeUserStatus.onUsersWriteSuccess();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
     }// method
 
 
 
-    public void registrarTask(DatabaseReference dbReference, Tareas tarea) {
+    public void registrarTask(DatabaseReference dbReference, Tareas tarea, final DataStatusManager.WriteTasks writeTasks) {
 
         DatabaseReference usuarioRef = dbReference.child("Usuarios").child(usuarioConectado.getId());
 
         usuarioRef.child("tareas").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<Tareas> listaTareas = new ArrayList<>();
-
+                listTask.clear();
                 // if theres existing task, add them to the list
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot tareaSnapshot : dataSnapshot.getChildren()) {
                         Tareas tareaExistente = tareaSnapshot.getValue(Tareas.class);
-                        listaTareas.add(tareaExistente);
+                        listTask.add(tareaExistente);
                     }
                 }
+                writeTasks.onTaskWriteSuccess();
 
                 // add the new task to the list
-                listaTareas.add(tarea);
+                listTask.add(tarea);
 
                 // update the list of tasks of the user
-                usuarioRef.child("tareas").setValue(listaTareas);
+                usuarioRef.child("tareas").setValue(listTask);
 
                 // aving the task in a individual "table"
                 dbReference.child("Tareas").child(tarea.getId()).setValue(tarea);
@@ -104,61 +144,60 @@ public class DAO {
 
             }
         });
-
-        dbReference.child("tareas").child(tarea.getId()).setValue(tarea);
-
     }// method
 
 
 
 
-    public List<Tareas> retornarTask(DatabaseReference dbReference) {
+    public void retornarTask(DatabaseReference dbReference, final DataStatusManager.GetTasks getTasks) {
 
-        dbReference.child("tareas").addValueEventListener(new ValueEventListener() {
+        DatabaseReference usuarioRef = dbReference.child("Usuarios").child(usuarioConectado.getId());
+
+        usuarioRef.child("tareas").addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                listTask.clear();
-                for(DataSnapshot objSnapshot : dataSnapshot.getChildren()){
-                    Tareas tarea = objSnapshot.getValue(Tareas.class);
-                    listTask.add(tarea);
+
+                if(dataSnapshot.exists()) {
+                    listTask.clear();
+                    for (DataSnapshot objSnapshot : dataSnapshot.getChildren()) {
+                        Tareas tarea = objSnapshot.getValue(Tareas.class);
+                        getTasks.onTasksGet(tarea);
+                    }
                 }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) { }
         });
 
-        return listTask;
     }// method
 
 
 
 
-    public void registrarEvent(DatabaseReference dbReference, Events evento){
+    public void registrarEvent(DatabaseReference dbReference, Events evento, final DataStatusManager.WriteEvents writeEvents){
 
         DatabaseReference usuarioRef = dbReference.child("Usuarios").child(usuarioConectado.getId());
 
         usuarioRef.child("eventos").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<Events> listaEventos = new ArrayList<>();
+                listEvents = new ArrayList<>();
 
                 // if theres existing task, add them to the list
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot tareaSnapshot : dataSnapshot.getChildren()) {
                         Events eventoExistente = tareaSnapshot.getValue(Events.class);
-                        listaEventos.add(eventoExistente);
+                        listEvents.add(eventoExistente);
                     }
                 }
-
-                // add the new event to the list
-                listaEventos.add(evento);
-
                 // update the list of events of the user
-                usuarioRef.child("tareas").setValue(listaEventos);
+                usuarioRef.child("eventos").setValue(listEvents);
 
                 // aving the task in a individual "table"
-                dbReference.child("Tareas").child(evento.getId()).setValue(evento);
+                dbReference.child("Eventos").child(evento.getId()).setValue(evento);
+
+                writeEvents.onEventsWriteSuccess();
             }
 
             @Override
@@ -166,24 +205,27 @@ public class DAO {
 
             }
         });
-
-        dbReference.child("tareas").child(evento.getId()).setValue(evento);
     }
 
 
 
 
-    public List<Events> retornarEvents(DatabaseReference dbReference){
+    public List<Events> retornarEvents(DatabaseReference dbReference, final DataStatusManager.GetEvents getEvents){
 
-        dbReference.child("Eventos").addValueEventListener(new ValueEventListener() {
+        DatabaseReference usuarioRef = dbReference.child("Usuarios").child(usuarioConectado.getId());
+
+        usuarioRef.child("Eventos").addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                listEvents.clear();
-                for(DataSnapshot objSnapshot : dataSnapshot.getChildren()){
-                    Events eventos = objSnapshot.getValue(Events.class);
-                    listEvents.add(eventos);
+
+                if(dataSnapshot.exists()){
+                    for(DataSnapshot objSnapshot : dataSnapshot.getChildren()){
+                        Events eventos = objSnapshot.getValue(Events.class);
+                        getEvents.onEventsGet(eventos);
+                    }
                 }
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) { }
